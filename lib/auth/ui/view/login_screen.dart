@@ -4,6 +4,7 @@ import 'package:finance_flow/app/design_system/theme/app_spacing.dart';
 import 'package:finance_flow/auth/data/repository/auth_repository.dart';
 import 'package:finance_flow/auth/ui/cubit/login_cubit.dart';
 import 'package:finance_flow/auth/ui/view/register_screen.dart';
+import 'package:finance_flow/dashboard/dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
@@ -135,7 +136,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _listenNavigationFlow(BuildContext context, LoginState state) {
     if (state.isAuthenticated) {
-      // context.goNamed(DashboardScreen.routeName);
+      context.goNamed(DashboardScreen.routeName);
     }
   }
 }

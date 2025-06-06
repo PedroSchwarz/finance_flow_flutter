@@ -23,6 +23,7 @@ dependencies:
   json_annotation: ^4.9.0
   rxdart: ^0.28.0
   google_fonts: ^6.2.1
+  intl: ^0.19.0
   calendar_pager:
     git: 
       url: https://github.com/PedroSchwarz/calendar_pager.git

@@ -3,6 +3,7 @@ import 'package:finance_flow/app/configurations/data/models/build_configurations
 import 'package:finance_flow/app/storage/app_local_storage.dart';
 import 'package:finance_flow/app/ui/navigation.dart';
 import 'package:finance_flow/auth/auth.dart';
+import 'package:finance_flow/dashboard/dashboard.dart';
 import 'package:finance_flow/groups/groups.dart';
 import 'package:finance_flow/invites/invites.dart';
 import 'package:finance_flow/splash/splash.dart';
@@ -28,7 +29,7 @@ sealed class BaseServiceLocators {
 class Locators extends BaseServiceLocators {
   @override
   BuildConfigurations get buildConfigurations {
-    return const BuildConfigurations(baseUrl: 'https://task-master-api-beej.onrender.com/', environment: Environment.production);
+    return const BuildConfigurations(baseUrl: 'http://localhost:3000/', environment: Environment.production);
   }
 
   @override
@@ -53,10 +54,10 @@ class Locators extends BaseServiceLocators {
       ..registerSingleton(UserLocalDataSource(localStorage: getIt()))
       ..registerSingleton(CredentialsRepository(credentialsLocalDataSource: getIt()))
       ..registerSingleton(UserRepository(userLocalDataSource: getIt()))
-      ..registerSingleton(createAuthenticatedDio(baseUrl: buildConfigurations.baseUrl, credentialsRepository: getIt()))
       ..registerSingleton(createDio(baseUrl: buildConfigurations.baseUrl), instanceName: BaseServiceLocators.noAuthDio)
       ..registerSingleton(AuthRemoteDataSource(getIt(instanceName: BaseServiceLocators.noAuthDio)))
       ..registerSingleton(AuthRepository(authRemoteDataSource: getIt(), userRepository: getIt(), credentialsRepository: getIt()))
+      ..registerSingleton(createAuthenticatedDio(baseUrl: buildConfigurations.baseUrl, authRepository: getIt(), credentialsRepository: getIt()))
       ..registerSingleton(createRouter(authRepository: getIt()))
       ..registerSingleton(SplashRepository(authRepository: getIt()))
       ..registerFactory(() => SplashCubit(splashRepository: getIt()))
@@ -72,16 +73,21 @@ class Locators extends BaseServiceLocators {
         () => CreateGroupCubit(authRepository: getIt(), groupsRepository: getIt(), invitesRepository: getIt(), usersRepository: getIt()),
       )
       ..registerFactory(() => InvitesCubit(invitesRepository: getIt(), groupsRepository: getIt()))
-      ..registerFactory(() => GroupDetailsCubit(authRepository: getIt(), groupsRepository: getIt()));
+      ..registerFactory(() => GroupDetailsCubit(authRepository: getIt(), groupsRepository: getIt()))
+      ..registerFactory(() => DashboardCubit(authRepository: getIt()));
   }
 
   Dio createDio({required String baseUrl}) {
     return Dio(BaseOptions(baseUrl: baseUrl));
   }
 
-  Dio createAuthenticatedDio({required String baseUrl, required CredentialsRepository credentialsRepository}) {
+  Dio createAuthenticatedDio({
+    required String baseUrl,
+    required AuthRepository authRepository,
+    required CredentialsRepository credentialsRepository,
+  }) {
     final dio = Dio(BaseOptions(baseUrl: baseUrl));
-    final authInterceptor = AuthInterceptor(credentialsRepository: credentialsRepository, dio: dio);
+    final authInterceptor = AuthInterceptor(authRepository: authRepository, credentialsRepository: credentialsRepository, dio: dio);
     dio.interceptors.add(authInterceptor);
     return dio;
   }

@@ -1,9 +1,12 @@
 import 'package:dio/dio.dart';
-import 'package:finance_flow/auth/data/repository/credentials_repository.dart';
+import 'package:finance_flow/auth/auth.dart';
 import 'package:flutter/foundation.dart';
 
 class AuthInterceptor extends Interceptor {
-  const AuthInterceptor({required this.credentialsRepository, required this.dio});
+  const AuthInterceptor({required this.authRepository, required this.credentialsRepository, required this.dio});
+
+  @visibleForTesting
+  final AuthRepository authRepository;
 
   @visibleForTesting
   final CredentialsRepository credentialsRepository;
@@ -25,6 +28,7 @@ class AuthInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
     if (err.response?.statusCode == 401) {
+      await authRepository.signOut();
       // final newToken = await refreshToken();
       // if (newToken != null) {
       //   await saveToken(newToken);

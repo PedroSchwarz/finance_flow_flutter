@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart' hide Headers;
 import 'package:finance_flow/users/data/models/device_token_request.dart';
+import 'package:finance_flow/users/data/models/update_balance_request.dart';
 import 'package:finance_flow/users/data/models/user_response.dart';
 import 'package:retrofit/retrofit.dart';
 
@@ -12,6 +13,14 @@ abstract class UsersRemoteDataSource {
   @GET('/')
   @Headers(<String, dynamic>{'Content-Type': 'application/json'})
   Future<List<UserResponse>> fetchAll();
+
+  @GET('/balance')
+  @Headers(<String, dynamic>{'Content-Type': 'application/json'})
+  Future<double> getBalance();
+
+  @PUT('/balance')
+  @Headers(<String, dynamic>{'Content-Type': 'application/json'})
+  Future<void> updateBalance(@Body() UpdateBalanceRequest request);
 
   @POST('/device-token')
   @Headers(<String, dynamic>{'Content-Type': 'application/json'})

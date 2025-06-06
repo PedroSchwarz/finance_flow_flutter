@@ -1,3 +1,4 @@
+import 'package:finance_flow/auth/data/models/login_request.dart';
 import 'package:finance_flow/auth/data/repository/auth_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -25,7 +26,7 @@ class LoginCubit extends Cubit<LoginState> {
 
   void login() async {
     emit(state.copyWith(isSubmitting: true, error: null));
-    final result = await authRepository.login(state.email, state.password);
+    final result = await authRepository.login(LoginRequest(email: state.email, password: state.password));
 
     switch (result) {
       case LoginResult.success:

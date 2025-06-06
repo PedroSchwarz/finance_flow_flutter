@@ -27,9 +27,9 @@ class AuthRepository {
     await userRepository.init();
   }
 
-  Future<LoginResult> login(String email, String password) async {
+  Future<LoginResult> login(LoginRequest request) async {
     try {
-      final response = await authRemoteDataSource.login(LoginRequest(email: email, password: password));
+      final response = await authRemoteDataSource.login(request);
 
       await credentialsRepository.updateCredentials(CredentialsData(accessToken: response.accessToken));
 
@@ -50,11 +50,9 @@ class AuthRepository {
     }
   }
 
-  Future<RegisterResult> register({required String firstName, required String lastName, required String email, required String password}) async {
+  Future<RegisterResult> register(RegisterRequest request) async {
     try {
-      final response = await authRemoteDataSource.register(
-        RegisterRequest(firstName: firstName, lastName: lastName, email: email, password: password),
-      );
+      final response = await authRemoteDataSource.register(request);
 
       await credentialsRepository.updateCredentials(CredentialsData(accessToken: response.accessToken));
 

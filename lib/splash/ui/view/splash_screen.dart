@@ -1,5 +1,6 @@
 import 'package:finance_flow/app/dependencies/locators.dart';
 import 'package:finance_flow/auth/ui/view/login_screen.dart';
+import 'package:finance_flow/dashboard/dashboard.dart';
 import 'package:finance_flow/splash/ui/cubit/splash_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -47,7 +48,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   void _listenNavigationFlow(BuildContext context, SplashState state) {
     switch (state.navigation) {
       case SplashNavigation.home:
-      // context.goNamed(DashboardScreen.routeName);
+        context.goNamed(DashboardScreen.routeName);
       default:
         context.goNamed(LoginScreen.routeName);
     }

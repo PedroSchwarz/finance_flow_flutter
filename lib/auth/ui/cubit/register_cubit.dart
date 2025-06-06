@@ -1,3 +1,4 @@
+import 'package:finance_flow/auth/data/models/register_request.dart';
 import 'package:finance_flow/auth/data/repository/auth_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,8 +10,10 @@ class RegisterCubit extends Cubit<RegisterState> {
   RegisterCubit({required this.authRepository})
     : super(
         const RegisterState(
+          step: 0,
           firstName: '',
           lastName: '',
+          initialBalance: 0,
           email: '',
           password: '',
           confirmPassword: '',
@@ -56,14 +59,34 @@ class RegisterCubit extends Cubit<RegisterState> {
     emit(state.copyWith(confirmPassword: password, confirmPasswordError: password != state.password, error: null));
   }
 
+  void updateInitialBalance(double amount) {
+    emit(state.copyWith(initialBalance: amount));
+  }
+
   void togglePasswordVisibility() {
     emit(state.copyWith(hidePassword: !state.hidePassword, error: null));
+  }
+
+  void previousStep() {
+    emit(state.copyWith(step: 0));
+  }
+
+  void nextStep() {
+    emit(state.copyWith(step: 1));
   }
 
   Future<void> register() async {
     emit(state.copyWith(isSubmitting: true, error: null));
 
-    final result = await authRepository.register(firstName: state.firstName, lastName: state.lastName, email: state.email, password: state.password);
+    final result = await authRepository.register(
+      RegisterRequest(
+        firstName: state.firstName,
+        lastName: state.lastName,
+        balance: state.initialBalance,
+        email: state.email,
+        password: state.password,
+      ),
+    );
 
     switch (result) {
       case RegisterResult.success:
@@ -79,8 +102,10 @@ class RegisterCubit extends Cubit<RegisterState> {
 @freezed
 sealed class RegisterState with _$RegisterState {
   const factory RegisterState({
+    required int step,
     required String firstName,
     required String lastName,
+    required double initialBalance,
     required String email,
     required String password,
     required String confirmPassword,

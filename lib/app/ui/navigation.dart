@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:finance_flow/auth/auth.dart';
+import 'package:finance_flow/dashboard/dashboard.dart';
 import 'package:finance_flow/splash/ui/view/splash_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
@@ -27,8 +28,33 @@ GoRouter createRouter({required AuthRepository authRepository}) {
     },
     routes: [
       GoRoute(path: '/${SplashScreen.routeName}', name: SplashScreen.routeName, builder: (context, state) => const SplashScreen()),
-      GoRoute(path: '/${LoginScreen.routeName}', name: LoginScreen.routeName, builder: (context, state) => const LoginScreen()),
+      GoRoute(
+        path: '/${LoginScreen.routeName}',
+        name: LoginScreen.routeName,
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: const LoginScreen(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(opacity: animation, child: child);
+            },
+          );
+        },
+      ),
       GoRoute(path: '/${RegisterScreen.routeName}', name: RegisterScreen.routeName, builder: (context, state) => const RegisterScreen()),
+      GoRoute(
+        path: '/${DashboardScreen.routeName}',
+        name: DashboardScreen.routeName,
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: const DashboardScreen(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(opacity: animation, child: child);
+            },
+          );
+        },
+      ),
     ],
   );
   return router;
