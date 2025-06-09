@@ -16,7 +16,7 @@ abstract class UsersRemoteDataSource {
 
   @GET('/balance')
   @Headers(<String, dynamic>{'Content-Type': 'application/json'})
-  Future<double> getBalance();
+  Future<String> getBalance();
 
   @PUT('/balance')
   @Headers(<String, dynamic>{'Content-Type': 'application/json'})

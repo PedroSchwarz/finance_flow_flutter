@@ -18,7 +18,8 @@ class UsersRepository {
   }
 
   Future<double> getBalance() async {
-    return usersRemoteDataSource.getBalance();
+    final balance = await usersRemoteDataSource.getBalance();
+    return double.tryParse(balance) ?? 0.0;
   }
 
   Future<void> updateBalance(double amount) async {

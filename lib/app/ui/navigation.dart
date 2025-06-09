@@ -2,7 +2,10 @@ import 'dart:async';
 
 import 'package:finance_flow/auth/auth.dart';
 import 'package:finance_flow/dashboard/dashboard.dart';
+import 'package:finance_flow/groups/groups.dart';
+import 'package:finance_flow/invites/invites.dart';
 import 'package:finance_flow/splash/ui/view/splash_screen.dart';
+import 'package:finance_flow/transactions/transactions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 
@@ -54,6 +57,22 @@ GoRouter createRouter({required AuthRepository authRepository}) {
             },
           );
         },
+        routes: [
+          GoRoute(path: '/${InvitesScreen.routeName}', name: InvitesScreen.routeName, builder: (context, state) => const InvitesScreen()),
+          GoRoute(path: '/${CreateGroupScreen.routeName}', name: CreateGroupScreen.routeName, builder: (context, state) => const CreateGroupScreen()),
+          GoRoute(
+            path: '/${TransactionsScreen.routeName}',
+            name: TransactionsScreen.routeName,
+            builder: (context, state) => const TransactionsScreen(),
+            routes: [
+              GoRoute(
+                path: '/${CreateTransactionScreen.routeName}',
+                name: CreateTransactionScreen.routeName,
+                builder: (context, state) => const CreateTransactionScreen(),
+              ),
+            ],
+          ),
+        ],
       ),
     ],
   );

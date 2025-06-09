@@ -117,7 +117,7 @@ class CurrencyInputFormatter extends TextInputFormatter {
     String digitsOnly = newValue.text.replaceAll(RegExp(r'[^\d]'), '');
 
     if (digitsOnly.isEmpty) {
-      return newValue.copyWith(text: '');
+      return TextEditingValue(text: _formatter.format(0), selection: TextSelection.collapsed(offset: _formatter.format(0).length));
     }
 
     String paddedDigits = digitsOnly.padLeft(3, '0');
@@ -141,5 +141,11 @@ class CurrencyInputFormatter extends TextInputFormatter {
         text.replaceAll(formatter.currencySymbol, '').replaceAll(formatter.symbols.GROUP_SEP, '').replaceAll(decimalSeparator, '.').trim();
 
     return double.tryParse(cleaned) ?? 0.0;
+  }
+
+  static String getFormatted(double amount) {
+    final formatter = NumberFormat.simpleCurrency(locale: Intl.systemLocale);
+
+    return formatter.format(amount);
   }
 }

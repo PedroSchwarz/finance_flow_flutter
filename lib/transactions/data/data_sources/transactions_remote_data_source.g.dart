@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'users_remote_data_source.dart';
+part of 'transactions_remote_data_source.dart';
 
 // **************************************************************************
 // RetrofitGenerator
@@ -8,9 +8,9 @@ part of 'users_remote_data_source.dart';
 
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element,unnecessary_string_interpolations
 
-class _UsersRemoteDataSource implements UsersRemoteDataSource {
-  _UsersRemoteDataSource(this._dio, {this.baseUrl, this.errorLogger}) {
-    baseUrl ??= '/users';
+class _TransactionsRemoteDataSource implements TransactionsRemoteDataSource {
+  _TransactionsRemoteDataSource(this._dio, {this.baseUrl, this.errorLogger}) {
+    baseUrl ??= '/transactions';
   }
 
   final Dio _dio;
@@ -20,13 +20,13 @@ class _UsersRemoteDataSource implements UsersRemoteDataSource {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<List<UserResponse>> fetchAll() async {
+  Future<List<TransactionResponse>> fetchAll() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'Content-Type': 'application/json'};
     _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<List<UserResponse>>(
+    final _options = _setStreamType<List<TransactionResponse>>(
       Options(
             method: 'GET',
             headers: _headers,
@@ -42,12 +42,13 @@ class _UsersRemoteDataSource implements UsersRemoteDataSource {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<List<dynamic>>(_options);
-    late List<UserResponse> _value;
+    late List<TransactionResponse> _value;
     try {
       _value =
           _result.data!
               .map(
-                (dynamic i) => UserResponse.fromJson(i as Map<String, dynamic>),
+                (dynamic i) =>
+                    TransactionResponse.fromJson(i as Map<String, dynamic>),
               )
               .toList();
     } on Object catch (e, s) {
@@ -58,13 +59,13 @@ class _UsersRemoteDataSource implements UsersRemoteDataSource {
   }
 
   @override
-  Future<String> getBalance() async {
+  Future<TransactionResponse> fetchById(String id) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'Content-Type': 'application/json'};
     _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<String>(
+    final _options = _setStreamType<TransactionResponse>(
       Options(
             method: 'GET',
             headers: _headers,
@@ -73,16 +74,16 @@ class _UsersRemoteDataSource implements UsersRemoteDataSource {
           )
           .compose(
             _dio.options,
-            '/balance',
+            '/${id}',
             queryParameters: queryParameters,
             data: _data,
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    final _result = await _dio.fetch<String>(_options);
-    late String _value;
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late TransactionResponse _value;
     try {
-      _value = _result.data!;
+      _value = TransactionResponse.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
@@ -91,32 +92,7 @@ class _UsersRemoteDataSource implements UsersRemoteDataSource {
   }
 
   @override
-  Future<void> updateBalance(UpdateBalanceRequest request) async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Content-Type': 'application/json'};
-    _headers.removeWhere((k, v) => v == null);
-    final _data = request;
-    final _options = _setStreamType<void>(
-      Options(
-            method: 'PUT',
-            headers: _headers,
-            extra: _extra,
-            contentType: 'application/json',
-          )
-          .compose(
-            _dio.options,
-            '/balance',
-            queryParameters: queryParameters,
-            data: _data,
-          )
-          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
-    );
-    await _dio.fetch<void>(_options);
-  }
-
-  @override
-  Future<void> updateDeviceToken(DeviceTokenRequest request) async {
+  Future<void> create(CreateTransactionRequest request) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'Content-Type': 'application/json'};
@@ -131,7 +107,32 @@ class _UsersRemoteDataSource implements UsersRemoteDataSource {
           )
           .compose(
             _dio.options,
-            '/device-token',
+            '/',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    await _dio.fetch<void>(_options);
+  }
+
+  @override
+  Future<void> delete(String id) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Content-Type': 'application/json'};
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<void>(
+      Options(
+            method: 'DELETE',
+            headers: _headers,
+            extra: _extra,
+            contentType: 'application/json',
+          )
+          .compose(
+            _dio.options,
+            '/${id}',
             queryParameters: queryParameters,
             data: _data,
           )

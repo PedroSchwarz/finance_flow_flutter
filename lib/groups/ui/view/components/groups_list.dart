@@ -8,7 +8,6 @@ import 'package:gap/gap.dart';
 class GroupsList extends StatelessWidget {
   const GroupsList({
     required this.groups,
-    required this.onToggleListType,
     required this.currentUser,
     required this.onSelected,
     required this.onEdit,
@@ -17,7 +16,6 @@ class GroupsList extends StatelessWidget {
   });
 
   final List<GroupResponse> groups;
-  final VoidCallback onToggleListType;
   final UserData currentUser;
   final void Function(GroupResponse) onSelected;
   final Future<void> Function(GroupResponse) onEdit;

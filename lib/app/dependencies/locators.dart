@@ -7,6 +7,7 @@ import 'package:finance_flow/dashboard/dashboard.dart';
 import 'package:finance_flow/groups/groups.dart';
 import 'package:finance_flow/invites/invites.dart';
 import 'package:finance_flow/splash/splash.dart';
+import 'package:finance_flow/transactions/transactions.dart';
 import 'package:finance_flow/users/users.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -74,7 +75,13 @@ class Locators extends BaseServiceLocators {
       )
       ..registerFactory(() => InvitesCubit(invitesRepository: getIt(), groupsRepository: getIt()))
       ..registerFactory(() => GroupDetailsCubit(authRepository: getIt(), groupsRepository: getIt()))
-      ..registerFactory(() => DashboardCubit(authRepository: getIt()));
+      ..registerFactory(
+        () => DashboardCubit(authRepository: getIt(), groupsRepository: getIt(), invitesRepository: getIt(), usersRepository: getIt()),
+      )
+      ..registerSingleton(TransactionsRemoteDataSource(getIt()))
+      ..registerSingleton(TransactionsRepository(transactionsRemoteDataSource: getIt()))
+      ..registerFactory(() => TransactionsCubit(transactionsRepository: getIt()))
+      ..registerFactory(() => CreateTransactionCubit(transactionsRepository: getIt()));
   }
 
   Dio createDio({required String baseUrl}) {
