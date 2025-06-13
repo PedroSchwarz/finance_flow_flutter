@@ -28,7 +28,7 @@ class GroupTransactionsList extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Movements', style: theme.textTheme.titleLarge?.copyWith(color: theme.colorScheme.primary)),
+              Text('Movements', style: theme.textTheme.titleLarge),
               DropdownButton<GroupTransactionDateSort>(
                 icon: const Padding(padding: EdgeInsets.only(left: AppSpacing.s), child: Icon(Icons.sort)),
                 isDense: true,

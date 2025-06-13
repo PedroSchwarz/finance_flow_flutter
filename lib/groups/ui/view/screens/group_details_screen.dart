@@ -81,7 +81,7 @@ class _GroupDetailsScreenState extends State<GroupDetailsScreen> {
                           isLoading: state.isLoading,
                           child: Text(
                             CurrencyInputFormatter.getFormatted(group.balance),
-                            style: theme.textTheme.displaySmall?.copyWith(color: group.balance < 0 ? theme.colorScheme.error : Colors.green),
+                            style: theme.textTheme.displayMedium?.copyWith(color: group.balance < 0 ? theme.colorScheme.error : Colors.green),
                           ),
                         ),
                       );
@@ -99,6 +99,13 @@ class _GroupDetailsScreenState extends State<GroupDetailsScreen> {
                       final group = state.group;
                       final isOwner = group?.owner.id == bloc.currentUser.id;
 
+                      if (group == null) {
+                        return const Padding(
+                          padding: EdgeInsets.all(AppSpacing.s),
+                          child: AppSkeleton(isLoading: true, child: SizedBox(height: 150, width: double.infinity)),
+                        );
+                      }
+
                       return Column(
                         spacing: AppSpacing.xxs,
                         children: [
@@ -110,33 +117,30 @@ class _GroupDetailsScreenState extends State<GroupDetailsScreen> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               spacing: AppSpacing.xs,
                               children: [
-                                AppSkeleton(
-                                  isLoading: group == null,
-                                  child: Row(
-                                    spacing: AppSpacing.xs,
-                                    children: [
-                                      const Text('Actions:'),
-                                      IconButton.filledTonal(
-                                        color: theme.colorScheme.onPrimaryContainer,
-                                        onPressed:
-                                            isOwner
-                                                ? () async {
-                                                  if (context.mounted) {
-                                                    final result = await context.pushNamed<bool>(
-                                                      CreateGroupScreen.routeName,
-                                                      queryParameters: {'id': group!.id},
-                                                    );
+                                Row(
+                                  spacing: AppSpacing.xs,
+                                  children: [
+                                    const Text('Actions:'),
+                                    IconButton.filledTonal(
+                                      color: theme.colorScheme.onPrimaryContainer,
+                                      onPressed:
+                                          isOwner
+                                              ? () async {
+                                                if (context.mounted) {
+                                                  final result = await context.pushNamed<bool>(
+                                                    CreateGroupScreen.routeName,
+                                                    queryParameters: {'id': group.id},
+                                                  );
 
-                                                    if (result ?? false) {
-                                                      bloc.loadGroup(groupId: group.id);
-                                                    }
+                                                  if (result ?? false) {
+                                                    bloc.loadGroup(groupId: group.id);
                                                   }
                                                 }
-                                                : null,
-                                        icon: const Icon(Icons.edit_outlined),
-                                      ),
-                                    ],
-                                  ),
+                                              }
+                                              : null,
+                                      icon: const Icon(Icons.edit_outlined),
+                                    ),
+                                  ],
                                 ),
                                 IconButton.outlined(
                                   color: Colors.red,
@@ -148,68 +152,65 @@ class _GroupDetailsScreenState extends State<GroupDetailsScreen> {
                             ),
                           ),
                           const Divider(),
-                          if (group == null)
-                            const SizedBox.shrink()
-                          else
-                            SizedBox(
-                              height: 68,
-                              child: ListView.separated(
-                                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
-                                scrollDirection: Axis.horizontal,
-                                itemCount: group.members.length,
-                                itemBuilder: (context, position) {
-                                  final member = group.members[position];
-                                  final isSelected = state.selectedMember == member;
+                          SizedBox(
+                            height: 68,
+                            child: ListView.separated(
+                              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
+                              scrollDirection: Axis.horizontal,
+                              itemCount: group.members.length,
+                              itemBuilder: (context, position) {
+                                final member = group.members[position];
+                                final isSelected = state.selectedMember == member;
 
-                                  return Material(
-                                    color: isSelected ? theme.colorScheme.surfaceContainer : Colors.transparent,
+                                return Material(
+                                  color: isSelected ? theme.colorScheme.surfaceContainer : Colors.transparent,
+                                  borderRadius: BorderRadius.circular(AppSpacing.xs),
+                                  child: InkWell(
+                                    onTap: () {
+                                      bloc.updateSelectedMember(member);
+                                    },
                                     borderRadius: BorderRadius.circular(AppSpacing.xs),
-                                    child: InkWell(
-                                      onTap: () {
-                                        bloc.updateSelectedMember(member);
-                                      },
-                                      borderRadius: BorderRadius.circular(AppSpacing.xs),
-                                      child: AnimatedContainer(
-                                        duration: const Duration(milliseconds: 400),
-                                        padding: const EdgeInsets.all(AppSpacing.xs),
-                                        decoration: BoxDecoration(
-                                          border: Border.all(color: isSelected ? theme.colorScheme.primary : Colors.transparent),
-                                          borderRadius: BorderRadius.circular(AppSpacing.xs),
-                                        ),
-                                        child: Row(
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: [
-                                            Stack(
-                                              alignment: Alignment.center,
-                                              children: [
-                                                SizedBox(
-                                                  width: 40,
-                                                  height: 40,
-                                                  child: CircularProgressIndicator(value: state.memberDepositPercentage, color: Colors.blue),
-                                                ),
-                                                CircleAvatar(child: Text(member.initials)),
-                                              ],
-                                            ),
-                                            const Gap(AppSpacing.s),
-                                            Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Text(CurrencyInputFormatter.getFormatted(state.memberDeposit), style: theme.textTheme.titleMedium),
-                                                const Gap(AppSpacing.xxxs),
-                                                Text('${state.formattedMemberDepositPercentage}%', style: theme.textTheme.titleMedium),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
+                                    child: AnimatedContainer(
+                                      duration: const Duration(milliseconds: 400),
+                                      padding: const EdgeInsets.all(AppSpacing.xs),
+                                      decoration: BoxDecoration(
+                                        border: Border.all(color: isSelected ? theme.colorScheme.primary : Colors.transparent),
+                                        borderRadius: BorderRadius.circular(AppSpacing.xs),
+                                      ),
+                                      child: Row(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Stack(
+                                            alignment: Alignment.center,
+                                            children: [
+                                              SizedBox(
+                                                width: 40,
+                                                height: 40,
+                                                child: CircularProgressIndicator(value: state.memberDepositPercentage, color: Colors.blue),
+                                              ),
+                                              CircleAvatar(child: Text(member.initials)),
+                                            ],
+                                          ),
+                                          const Gap(AppSpacing.s),
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(CurrencyInputFormatter.getFormatted(state.memberDeposit), style: theme.textTheme.titleMedium),
+                                              const Gap(AppSpacing.xxxs),
+                                              Text('${state.formattedMemberDepositPercentage}%', style: theme.textTheme.titleMedium),
+                                            ],
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                  );
-                                },
-                                separatorBuilder: (__, _) {
-                                  return const Padding(padding: EdgeInsets.symmetric(horizontal: AppSpacing.xs), child: VerticalDivider());
-                                },
-                              ),
+                                  ),
+                                );
+                              },
+                              separatorBuilder: (__, _) {
+                                return const Padding(padding: EdgeInsets.symmetric(horizontal: AppSpacing.xs), child: VerticalDivider());
+                              },
                             ),
+                          ),
                         ],
                       );
                     },
@@ -253,7 +254,7 @@ class _GroupDetailsScreenState extends State<GroupDetailsScreen> {
             ),
           ),
           floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-          floatingActionButton: FloatingActionButton.extended(
+          floatingActionButton: FloatingActionButton(
             onPressed: () async {
               if (context.mounted) {
                 final _ = await showModalBottomSheet(
@@ -290,8 +291,7 @@ class _GroupDetailsScreenState extends State<GroupDetailsScreen> {
                 bloc.resetTransactionForm();
               }
             },
-            label: const Text('Make Movement'),
-            icon: const Icon(Icons.repeat),
+            child: const Icon(Icons.repeat),
           ),
         ),
       ),

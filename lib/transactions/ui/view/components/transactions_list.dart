@@ -11,23 +11,36 @@ class TransactionsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: onRefresh,
-      child: ListView.separated(
-        padding: const EdgeInsets.only(top: AppSpacing.s, bottom: AppSpacing.max),
-        itemCount: transactions.length,
-        itemBuilder: (context, position) {
-          final transaction = transactions[position];
+    final theme = Theme.of(context);
 
-          return TransactionItem(
-            transaction: transaction,
-            onDelete: () async {
-              await onDelete(transaction);
-            },
-          );
-        },
-        separatorBuilder: (context, index) => const Divider(),
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: AppSpacing.m, left: AppSpacing.s, right: AppSpacing.s),
+          child: Text('Movements', style: theme.textTheme.titleLarge),
+        ),
+        Expanded(
+          child: RefreshIndicator(
+            onRefresh: onRefresh,
+            child: ListView.separated(
+              padding: const EdgeInsets.only(top: AppSpacing.s, bottom: AppSpacing.max),
+              itemCount: transactions.length,
+              itemBuilder: (context, position) {
+                final transaction = transactions[position];
+
+                return TransactionItem(
+                  transaction: transaction,
+                  onDelete: () async {
+                    await onDelete(transaction);
+                  },
+                );
+              },
+              separatorBuilder: (context, index) => const Divider(),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

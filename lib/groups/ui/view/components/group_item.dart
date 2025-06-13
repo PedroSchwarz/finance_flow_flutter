@@ -34,7 +34,13 @@ class GroupItem extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Text(group.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: theme.textTheme.titleLarge),
-                      Text(group.description, maxLines: 3, overflow: TextOverflow.ellipsis),
+                      const Gap(AppSpacing.xs),
+                      Text(group.description, maxLines: 3, overflow: TextOverflow.ellipsis, style: theme.textTheme.bodyLarge),
+                      const Gap(AppSpacing.s),
+                      Text(
+                        CurrencyInputFormatter.getFormatted(group.balance),
+                        style: theme.textTheme.headlineLarge?.copyWith(color: group.balance.isNegative ? Colors.red : theme.colorScheme.primary),
+                      ),
                     ],
                   ),
                   const Gap(AppSpacing.s),

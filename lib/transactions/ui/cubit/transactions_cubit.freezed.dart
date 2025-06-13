@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$TransactionsState {
 
- bool get isLoading; DateTime get selectedDate; List<TransactionResponse> get transactions; bool get isRefreshing; TransactionResponse? get transactionToBeDeleted;
+ bool get isLoading; DateTime get selectedDate; List<TransactionResponse> get transactions; TransactionsListType get listType; TransactionsTypeFilter get typeFilter; TransactionsDateSort get dateSort; bool get isRefreshing; TransactionResponse? get transactionToBeDeleted;
 /// Create a copy of TransactionsState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -26,16 +26,16 @@ $TransactionsStateCopyWith<TransactionsState> get copyWith => _$TransactionsStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TransactionsState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.selectedDate, selectedDate) || other.selectedDate == selectedDate)&&const DeepCollectionEquality().equals(other.transactions, transactions)&&(identical(other.isRefreshing, isRefreshing) || other.isRefreshing == isRefreshing)&&(identical(other.transactionToBeDeleted, transactionToBeDeleted) || other.transactionToBeDeleted == transactionToBeDeleted));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TransactionsState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.selectedDate, selectedDate) || other.selectedDate == selectedDate)&&const DeepCollectionEquality().equals(other.transactions, transactions)&&(identical(other.listType, listType) || other.listType == listType)&&(identical(other.typeFilter, typeFilter) || other.typeFilter == typeFilter)&&(identical(other.dateSort, dateSort) || other.dateSort == dateSort)&&(identical(other.isRefreshing, isRefreshing) || other.isRefreshing == isRefreshing)&&(identical(other.transactionToBeDeleted, transactionToBeDeleted) || other.transactionToBeDeleted == transactionToBeDeleted));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isLoading,selectedDate,const DeepCollectionEquality().hash(transactions),isRefreshing,transactionToBeDeleted);
+int get hashCode => Object.hash(runtimeType,isLoading,selectedDate,const DeepCollectionEquality().hash(transactions),listType,typeFilter,dateSort,isRefreshing,transactionToBeDeleted);
 
 @override
 String toString() {
-  return 'TransactionsState(isLoading: $isLoading, selectedDate: $selectedDate, transactions: $transactions, isRefreshing: $isRefreshing, transactionToBeDeleted: $transactionToBeDeleted)';
+  return 'TransactionsState(isLoading: $isLoading, selectedDate: $selectedDate, transactions: $transactions, listType: $listType, typeFilter: $typeFilter, dateSort: $dateSort, isRefreshing: $isRefreshing, transactionToBeDeleted: $transactionToBeDeleted)';
 }
 
 
@@ -46,7 +46,7 @@ abstract mixin class $TransactionsStateCopyWith<$Res>  {
   factory $TransactionsStateCopyWith(TransactionsState value, $Res Function(TransactionsState) _then) = _$TransactionsStateCopyWithImpl;
 @useResult
 $Res call({
- bool isLoading, DateTime selectedDate, List<TransactionResponse> transactions, bool isRefreshing, TransactionResponse? transactionToBeDeleted
+ bool isLoading, DateTime selectedDate, List<TransactionResponse> transactions, TransactionsListType listType, TransactionsTypeFilter typeFilter, TransactionsDateSort dateSort, bool isRefreshing, TransactionResponse? transactionToBeDeleted
 });
 
 
@@ -63,12 +63,15 @@ class _$TransactionsStateCopyWithImpl<$Res>
 
 /// Create a copy of TransactionsState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? isLoading = null,Object? selectedDate = null,Object? transactions = null,Object? isRefreshing = null,Object? transactionToBeDeleted = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? isLoading = null,Object? selectedDate = null,Object? transactions = null,Object? listType = null,Object? typeFilter = null,Object? dateSort = null,Object? isRefreshing = null,Object? transactionToBeDeleted = freezed,}) {
   return _then(_self.copyWith(
 isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,selectedDate: null == selectedDate ? _self.selectedDate : selectedDate // ignore: cast_nullable_to_non_nullable
 as DateTime,transactions: null == transactions ? _self.transactions : transactions // ignore: cast_nullable_to_non_nullable
-as List<TransactionResponse>,isRefreshing: null == isRefreshing ? _self.isRefreshing : isRefreshing // ignore: cast_nullable_to_non_nullable
+as List<TransactionResponse>,listType: null == listType ? _self.listType : listType // ignore: cast_nullable_to_non_nullable
+as TransactionsListType,typeFilter: null == typeFilter ? _self.typeFilter : typeFilter // ignore: cast_nullable_to_non_nullable
+as TransactionsTypeFilter,dateSort: null == dateSort ? _self.dateSort : dateSort // ignore: cast_nullable_to_non_nullable
+as TransactionsDateSort,isRefreshing: null == isRefreshing ? _self.isRefreshing : isRefreshing // ignore: cast_nullable_to_non_nullable
 as bool,transactionToBeDeleted: freezed == transactionToBeDeleted ? _self.transactionToBeDeleted : transactionToBeDeleted // ignore: cast_nullable_to_non_nullable
 as TransactionResponse?,
   ));
@@ -93,7 +96,7 @@ $TransactionResponseCopyWith<$Res>? get transactionToBeDeleted {
 
 
 class _TransactionsState extends TransactionsState {
-  const _TransactionsState({required this.isLoading, required this.selectedDate, required final  List<TransactionResponse> transactions, required this.isRefreshing, this.transactionToBeDeleted}): _transactions = transactions,super._();
+  const _TransactionsState({required this.isLoading, required this.selectedDate, required final  List<TransactionResponse> transactions, required this.listType, required this.typeFilter, required this.dateSort, required this.isRefreshing, this.transactionToBeDeleted}): _transactions = transactions,super._();
   
 
 @override final  bool isLoading;
@@ -105,6 +108,9 @@ class _TransactionsState extends TransactionsState {
   return EqualUnmodifiableListView(_transactions);
 }
 
+@override final  TransactionsListType listType;
+@override final  TransactionsTypeFilter typeFilter;
+@override final  TransactionsDateSort dateSort;
 @override final  bool isRefreshing;
 @override final  TransactionResponse? transactionToBeDeleted;
 
@@ -118,16 +124,16 @@ _$TransactionsStateCopyWith<_TransactionsState> get copyWith => __$TransactionsS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TransactionsState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.selectedDate, selectedDate) || other.selectedDate == selectedDate)&&const DeepCollectionEquality().equals(other._transactions, _transactions)&&(identical(other.isRefreshing, isRefreshing) || other.isRefreshing == isRefreshing)&&(identical(other.transactionToBeDeleted, transactionToBeDeleted) || other.transactionToBeDeleted == transactionToBeDeleted));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TransactionsState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.selectedDate, selectedDate) || other.selectedDate == selectedDate)&&const DeepCollectionEquality().equals(other._transactions, _transactions)&&(identical(other.listType, listType) || other.listType == listType)&&(identical(other.typeFilter, typeFilter) || other.typeFilter == typeFilter)&&(identical(other.dateSort, dateSort) || other.dateSort == dateSort)&&(identical(other.isRefreshing, isRefreshing) || other.isRefreshing == isRefreshing)&&(identical(other.transactionToBeDeleted, transactionToBeDeleted) || other.transactionToBeDeleted == transactionToBeDeleted));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isLoading,selectedDate,const DeepCollectionEquality().hash(_transactions),isRefreshing,transactionToBeDeleted);
+int get hashCode => Object.hash(runtimeType,isLoading,selectedDate,const DeepCollectionEquality().hash(_transactions),listType,typeFilter,dateSort,isRefreshing,transactionToBeDeleted);
 
 @override
 String toString() {
-  return 'TransactionsState(isLoading: $isLoading, selectedDate: $selectedDate, transactions: $transactions, isRefreshing: $isRefreshing, transactionToBeDeleted: $transactionToBeDeleted)';
+  return 'TransactionsState(isLoading: $isLoading, selectedDate: $selectedDate, transactions: $transactions, listType: $listType, typeFilter: $typeFilter, dateSort: $dateSort, isRefreshing: $isRefreshing, transactionToBeDeleted: $transactionToBeDeleted)';
 }
 
 
@@ -138,7 +144,7 @@ abstract mixin class _$TransactionsStateCopyWith<$Res> implements $TransactionsS
   factory _$TransactionsStateCopyWith(_TransactionsState value, $Res Function(_TransactionsState) _then) = __$TransactionsStateCopyWithImpl;
 @override @useResult
 $Res call({
- bool isLoading, DateTime selectedDate, List<TransactionResponse> transactions, bool isRefreshing, TransactionResponse? transactionToBeDeleted
+ bool isLoading, DateTime selectedDate, List<TransactionResponse> transactions, TransactionsListType listType, TransactionsTypeFilter typeFilter, TransactionsDateSort dateSort, bool isRefreshing, TransactionResponse? transactionToBeDeleted
 });
 
 
@@ -155,12 +161,15 @@ class __$TransactionsStateCopyWithImpl<$Res>
 
 /// Create a copy of TransactionsState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? isLoading = null,Object? selectedDate = null,Object? transactions = null,Object? isRefreshing = null,Object? transactionToBeDeleted = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? isLoading = null,Object? selectedDate = null,Object? transactions = null,Object? listType = null,Object? typeFilter = null,Object? dateSort = null,Object? isRefreshing = null,Object? transactionToBeDeleted = freezed,}) {
   return _then(_TransactionsState(
 isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,selectedDate: null == selectedDate ? _self.selectedDate : selectedDate // ignore: cast_nullable_to_non_nullable
 as DateTime,transactions: null == transactions ? _self._transactions : transactions // ignore: cast_nullable_to_non_nullable
-as List<TransactionResponse>,isRefreshing: null == isRefreshing ? _self.isRefreshing : isRefreshing // ignore: cast_nullable_to_non_nullable
+as List<TransactionResponse>,listType: null == listType ? _self.listType : listType // ignore: cast_nullable_to_non_nullable
+as TransactionsListType,typeFilter: null == typeFilter ? _self.typeFilter : typeFilter // ignore: cast_nullable_to_non_nullable
+as TransactionsTypeFilter,dateSort: null == dateSort ? _self.dateSort : dateSort // ignore: cast_nullable_to_non_nullable
+as TransactionsDateSort,isRefreshing: null == isRefreshing ? _self.isRefreshing : isRefreshing // ignore: cast_nullable_to_non_nullable
 as bool,transactionToBeDeleted: freezed == transactionToBeDeleted ? _self.transactionToBeDeleted : transactionToBeDeleted // ignore: cast_nullable_to_non_nullable
 as TransactionResponse?,
   ));

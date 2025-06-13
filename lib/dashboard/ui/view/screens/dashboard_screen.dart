@@ -49,8 +49,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         count: invites.length,
                         onPressed: () async {
                           if (context.mounted) {
-                            await context.pushNamed(InvitesScreen.routeName);
-                            await Future.wait([bloc.loadGroups(), bloc.loadInvites()]);
+                            final _ = await context.pushNamed(InvitesScreen.routeName);
+                            bloc.refresh();
                           }
                         },
                       );
@@ -105,15 +105,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
             return GroupsList(
               groups: state.groups,
               currentUser: bloc.currentUser,
-              onSelected: (group) {
-                context.goNamed(GroupDetailsScreen.routeName, pathParameters: {'id': group.id}, queryParameters: {'name': group.name});
+              onSelected: (group) async {
+                if (context.mounted) {
+                  final _ = await context.pushNamed(
+                    GroupDetailsScreen.routeName,
+                    pathParameters: {'id': group.id},
+                    queryParameters: {'name': group.name},
+                  );
+                  bloc.refresh();
+                }
               },
               onEdit: (group) async {
                 if (context.mounted) {
                   final result = await context.pushNamed<bool>(CreateGroupScreen.routeName, queryParameters: {'id': group.id});
 
                   if (result ?? false) {
-                    bloc.loadGroups();
+                    bloc.refresh();
                   }
                 }
               },

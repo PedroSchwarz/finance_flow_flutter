@@ -53,12 +53,12 @@ class DashboardCubit extends Cubit<DashboardState> {
   }
 
   Future<void> loadInvites() async {
-    // try {
-    //   final invites = await invitesRepository.getInvites();
-    //   emit(state.copyWith(invites: invites));
-    // } catch (e) {
-    //   _log.severe('Error while loading invites: $e', e);
-    // }
+    try {
+      final invites = await invitesRepository.getInvites();
+      emit(state.copyWith(invites: invites));
+    } catch (e) {
+      _log.severe('Error while loading invites: $e', e);
+    }
   }
 
   Future<void> refresh() async {

@@ -37,7 +37,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
           headerSliverBuilder: (_, __) {
             return [
               SliverAppBar.medium(
-                title: const Text('Transaction'),
+                title: const Text('Transactions'),
                 bottom: PreferredSize(
                   preferredSize: const Size(0, AppSpacing.s),
                   child: BlocSelector<TransactionsCubit, TransactionsState, bool>(
@@ -48,20 +48,107 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                 ),
               ),
               SliverToBoxAdapter(
-                child: SizedBox(
-                  height: CalendarPagerViewConstants.collapsedHeight,
-                  child: CalendarPagerView(
-                    theme: CalendarPagerTheme.from(
-                      background: theme.scaffoldBackgroundColor,
-                      accent: theme.colorScheme.primary,
-                      headerTitle: theme.textTheme.headlineLarge!,
-                      itemBorder: theme.colorScheme.primary,
-                      onAccent: theme.colorScheme.onPrimary,
-                      hasShadow: false,
-                    ),
-                    hasHeader: false,
-                    onDateSelected: bloc.updateSelectedDate,
+                child: Padding(
+                  padding: const EdgeInsets.all(AppSpacing.s),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      BlocSelector<TransactionsCubit, TransactionsState, TransactionsListType>(
+                        bloc: bloc,
+                        selector: (state) => state.listType,
+                        builder: (context, listType) {
+                          return DropdownButton<TransactionsListType>(
+                            isDense: true,
+                            value: listType,
+                            icon: const Padding(padding: EdgeInsets.only(left: AppSpacing.s), child: Icon(Icons.list, color: Colors.orange)),
+                            items:
+                                TransactionsListType.values.map((type) {
+                                  return DropdownMenuItem(
+                                    value: type,
+                                    child: Text(switch (type) {
+                                      TransactionsListType.list => 'List',
+                                      TransactionsListType.calendar => 'Calendar',
+                                    }),
+                                  );
+                                }).toList(),
+                            onChanged: (value) => bloc.updateListType(value!),
+                          );
+                        },
+                      ),
+                      BlocSelector<TransactionsCubit, TransactionsState, TransactionsTypeFilter>(
+                        bloc: bloc,
+                        selector: (state) => state.typeFilter,
+                        builder: (context, typeFilter) {
+                          return DropdownButton<TransactionsTypeFilter>(
+                            isDense: true,
+                            value: typeFilter,
+                            icon: const Padding(padding: EdgeInsets.only(left: AppSpacing.s), child: Icon(Icons.repeat, color: Colors.green)),
+                            items:
+                                TransactionsTypeFilter.values.map((filter) {
+                                  return DropdownMenuItem(
+                                    value: filter,
+                                    child: Text(switch (filter) {
+                                      TransactionsTypeFilter.all => 'All',
+                                      TransactionsTypeFilter.incomes => 'Incomes',
+                                      TransactionsTypeFilter.expenses => 'Expenses',
+                                    }),
+                                  );
+                                }).toList(),
+                            onChanged: (value) => bloc.updateTransactionsTypeFilter(value!),
+                          );
+                        },
+                      ),
+                      BlocSelector<TransactionsCubit, TransactionsState, TransactionsDateSort>(
+                        bloc: bloc,
+                        selector: (state) => state.dateSort,
+                        builder: (context, dateSort) {
+                          return DropdownButton<TransactionsDateSort>(
+                            isDense: true,
+                            value: dateSort,
+                            icon: const Padding(padding: EdgeInsets.only(left: AppSpacing.s), child: Icon(Icons.sort, color: Colors.blue)),
+                            items:
+                                TransactionsDateSort.values.map((sort) {
+                                  return DropdownMenuItem(
+                                    value: sort,
+                                    child: Text(switch (sort) {
+                                      TransactionsDateSort.newest => 'Newest',
+                                      TransactionsDateSort.oldest => 'Oldest',
+                                    }),
+                                  );
+                                }).toList(),
+                            onChanged: (value) => bloc.updateDateSort(value!),
+                          );
+                        },
+                      ),
+                    ],
                   ),
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: BlocSelector<TransactionsCubit, TransactionsState, TransactionsListType>(
+                  bloc: bloc,
+                  selector: (state) => state.listType,
+                  builder: (context, listType) {
+                    if (listType == TransactionsListType.list) {
+                      return const SizedBox.shrink();
+                    }
+
+                    return SizedBox(
+                      height: CalendarPagerViewConstants.collapsedHeight,
+                      child: CalendarPagerView(
+                        theme: CalendarPagerTheme.from(
+                          background: theme.scaffoldBackgroundColor,
+                          accent: theme.colorScheme.primary,
+                          headerTitle: theme.textTheme.headlineLarge!,
+                          itemBorder: theme.colorScheme.primary,
+                          onAccent: theme.colorScheme.onPrimary,
+                          hasShadow: false,
+                        ),
+                        hasHeader: false,
+                        onDateSelected: bloc.updateSelectedDate,
+                      ),
+                    );
+                  },
                 ),
               ),
             ];

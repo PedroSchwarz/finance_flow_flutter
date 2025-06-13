@@ -1,4 +1,5 @@
 import 'package:calendar_pager/utils/extensions/date_extensions.dart';
+import 'package:collection/collection.dart';
 import 'package:finance_flow/transactions/transactions.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -8,7 +9,17 @@ part 'transactions_cubit.freezed.dart';
 
 class TransactionsCubit extends Cubit<TransactionsState> {
   TransactionsCubit({required this.transactionsRepository})
-    : super(TransactionsState(isLoading: false, selectedDate: DateTime.now(), transactions: [], isRefreshing: false));
+    : super(
+        TransactionsState(
+          isLoading: false,
+          selectedDate: DateTime.now(),
+          transactions: [],
+          listType: TransactionsListType.calendar,
+          typeFilter: TransactionsTypeFilter.all,
+          dateSort: TransactionsDateSort.newest,
+          isRefreshing: false,
+        ),
+      );
 
   static final _log = Logger('TransactionsCubit');
 
@@ -38,6 +49,18 @@ class TransactionsCubit extends Cubit<TransactionsState> {
 
   void updateSelectedDate(DateTime date) {
     emit(state.copyWith(selectedDate: date));
+  }
+
+  void updateListType(TransactionsListType listType) {
+    emit(state.copyWith(listType: listType));
+  }
+
+  void updateTransactionsTypeFilter(TransactionsTypeFilter typeFilter) {
+    emit(state.copyWith(typeFilter: typeFilter));
+  }
+
+  void updateDateSort(TransactionsDateSort dateSort) {
+    emit(state.copyWith(dateSort: dateSort));
   }
 
   void selectTransactionToDelete(TransactionResponse? transaction) {
@@ -70,6 +93,9 @@ sealed class TransactionsState with _$TransactionsState {
     required bool isLoading,
     required DateTime selectedDate,
     required List<TransactionResponse> transactions,
+    required TransactionsListType listType,
+    required TransactionsTypeFilter typeFilter,
+    required TransactionsDateSort dateSort,
     required bool isRefreshing,
     TransactionResponse? transactionToBeDeleted,
   }) = _TransactionsState;
@@ -77,5 +103,38 @@ sealed class TransactionsState with _$TransactionsState {
   const TransactionsState._();
 
   List<TransactionResponse> get filteredTransactions =>
-      transactions.where((transaction) => transaction.createdAt.toLocal().getDateOnly().isAtSameMomentAs(selectedDate.getDateOnly())).toList();
+      transactions
+          .where((transaction) {
+            switch (listType) {
+              case TransactionsListType.list:
+                return true;
+              case TransactionsListType.calendar:
+                return transaction.createdAt.toLocal().getDateOnly().isAtSameMomentAs(selectedDate.getDateOnly());
+            }
+          })
+          .where((transaction) {
+            switch (typeFilter) {
+              case TransactionsTypeFilter.all:
+                return true;
+              case TransactionsTypeFilter.incomes:
+                return transaction.type == TransactionType.income;
+              case TransactionsTypeFilter.expenses:
+                return transaction.type == TransactionType.expense;
+            }
+          })
+          .sorted((a, b) {
+            switch (dateSort) {
+              case TransactionsDateSort.newest:
+                return b.createdAt.compareTo(a.createdAt);
+              case TransactionsDateSort.oldest:
+                return a.createdAt.compareTo(b.createdAt);
+            }
+          })
+          .toList();
 }
+
+enum TransactionsListType { list, calendar }
+
+enum TransactionsTypeFilter { all, incomes, expenses }
+
+enum TransactionsDateSort { newest, oldest }
