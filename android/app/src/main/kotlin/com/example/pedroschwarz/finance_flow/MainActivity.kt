@@ -1,4 +1,4 @@
-package com.example.finance_flow
+package com.example.pedroschwarz.finance_flow
 
 import io.flutter.embedding.android.FlutterActivity
 
