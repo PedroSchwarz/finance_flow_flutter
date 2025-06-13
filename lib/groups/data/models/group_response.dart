@@ -1,6 +1,7 @@
 import 'package:finance_flow/transactions/transactions.dart';
 import 'package:finance_flow/users/data/models/user_response.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:intl/intl.dart';
 
 part 'group_response.freezed.dart';
 part 'group_response.g.dart';
@@ -31,5 +32,14 @@ abstract class GroupTransactionResponse with _$GroupTransactionResponse {
     required DateTime createdAt,
   }) = _GroupTransactionResponse;
 
+  const GroupTransactionResponse._();
+
   factory GroupTransactionResponse.fromJson(Map<String, dynamic> json) => _$GroupTransactionResponseFromJson(json);
+
+  String get formattedCreatedAt {
+    final localDate = createdAt;
+    final formatter = DateFormat('EEEE, d MMMM - hh:mm a');
+
+    return formatter.format(localDate.toLocal());
+  }
 }

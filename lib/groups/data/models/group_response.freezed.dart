@@ -276,8 +276,8 @@ $UserResponseCopyWith<$Res> get owner {
 /// @nodoc
 @JsonSerializable()
 
-class _GroupTransactionResponse implements GroupTransactionResponse {
-  const _GroupTransactionResponse({@JsonKey(name: '_id') required this.id, required this.amount, required this.type, required this.owner, required this.createdAt});
+class _GroupTransactionResponse extends GroupTransactionResponse {
+  const _GroupTransactionResponse({@JsonKey(name: '_id') required this.id, required this.amount, required this.type, required this.owner, required this.createdAt}): super._();
   factory _GroupTransactionResponse.fromJson(Map<String, dynamic> json) => _$GroupTransactionResponseFromJson(json);
 
 @override@JsonKey(name: '_id') final  String id;

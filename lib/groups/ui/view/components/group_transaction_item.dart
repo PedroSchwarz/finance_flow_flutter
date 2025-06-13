@@ -2,7 +2,6 @@ import 'package:finance_flow/app/app.dart';
 import 'package:finance_flow/groups/groups.dart';
 import 'package:finance_flow/transactions/transactions.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class GroupTransactionItem extends StatelessWidget {
   const GroupTransactionItem({required this.transaction, super.key});
@@ -56,7 +55,7 @@ class GroupTransactionItem extends StatelessWidget {
                     CurrencyInputFormatter.getFormatted(transaction.amount),
                     style: theme.textTheme.displaySmall?.copyWith(color: theme.colorScheme.primary),
                   ),
-                  Text(DateFormat('dd/MM/yyyy - hh:mm a').format(transaction.createdAt.toLocal())),
+                  Text(transaction.formattedCreatedAt),
                 ],
               ),
             ),

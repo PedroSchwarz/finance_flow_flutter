@@ -40,6 +40,7 @@ class _GroupDetailsScreenState extends State<GroupDetailsScreen> {
         listenWhen: (previous, current) => previous.showLeaveDialog != current.showLeaveDialog,
         listener: _listenLeaveDialog,
         child: Scaffold(
+          resizeToAvoidBottomInset: false,
           body: NestedScrollView(
             floatHeaderSlivers: true,
             headerSliverBuilder: (_, __) {
@@ -259,6 +260,8 @@ class _GroupDetailsScreenState extends State<GroupDetailsScreen> {
               if (context.mounted) {
                 final _ = await showModalBottomSheet(
                   context: context,
+                  useSafeArea: true,
+                  isScrollControlled: true,
                   builder: (context) {
                     return BlocBuilder<GroupDetailsCubit, GroupDetailsState>(
                       bloc: bloc,

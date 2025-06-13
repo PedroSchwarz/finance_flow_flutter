@@ -17,7 +17,7 @@ class TransactionsList extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Padding(
-          padding: const EdgeInsets.only(top: AppSpacing.m, left: AppSpacing.s, right: AppSpacing.s),
+          padding: const EdgeInsets.only(top: AppSpacing.s, left: AppSpacing.s, right: AppSpacing.s),
           child: Text('Movements', style: theme.textTheme.titleLarge),
         ),
         Expanded(

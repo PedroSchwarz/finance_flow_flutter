@@ -58,7 +58,6 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                         selector: (state) => state.listType,
                         builder: (context, listType) {
                           return DropdownButton<TransactionsListType>(
-                            isDense: true,
                             value: listType,
                             icon: const Padding(padding: EdgeInsets.only(left: AppSpacing.s), child: Icon(Icons.list, color: Colors.orange)),
                             items:
@@ -80,7 +79,6 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                         selector: (state) => state.typeFilter,
                         builder: (context, typeFilter) {
                           return DropdownButton<TransactionsTypeFilter>(
-                            isDense: true,
                             value: typeFilter,
                             icon: const Padding(padding: EdgeInsets.only(left: AppSpacing.s), child: Icon(Icons.repeat, color: Colors.green)),
                             items:
@@ -103,7 +101,6 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                         selector: (state) => state.dateSort,
                         builder: (context, dateSort) {
                           return DropdownButton<TransactionsDateSort>(
-                            isDense: true,
                             value: dateSort,
                             icon: const Padding(padding: EdgeInsets.only(left: AppSpacing.s), child: Icon(Icons.sort, color: Colors.blue)),
                             items:
