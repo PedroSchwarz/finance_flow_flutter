@@ -80,8 +80,8 @@ as bool,
 /// @nodoc
 
 
-class _DashboardState extends DashboardState {
-  const _DashboardState({required this.isLoading, required this.balance, required final  List<GroupResponse> groups, required final  List<InviteResponse> invites, required this.isRefreshing}): _groups = groups,_invites = invites,super._();
+class _DashboardState implements DashboardState {
+  const _DashboardState({required this.isLoading, required this.balance, required final  List<GroupResponse> groups, required final  List<InviteResponse> invites, required this.isRefreshing}): _groups = groups,_invites = invites;
   
 
 @override final  bool isLoading;

@@ -4,7 +4,6 @@ import 'package:finance_flow/invites/invites.dart';
 import 'package:finance_flow/users/users.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 
 part 'dashboard_cubit.freezed.dart';
@@ -82,8 +81,4 @@ sealed class DashboardState with _$DashboardState {
     required List<InviteResponse> invites,
     required bool isRefreshing,
   }) = _DashboardState;
-
-  const DashboardState._();
-
-  String get balanceString => NumberFormat.simpleCurrency().format(balance);
 }

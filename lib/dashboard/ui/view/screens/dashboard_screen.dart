@@ -28,8 +28,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Scaffold(
       drawer: DashboardDrawer(
         initials: bloc.currentUser.initials,
@@ -75,36 +73,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   return SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.all(AppSpacing.s),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        spacing: AppSpacing.s,
-                        children: [
-                          Flexible(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('Your Balance is', style: theme.textTheme.headlineSmall),
-                                Text(
-                                  state.balanceString,
-                                  style: theme.textTheme.displayLarge?.copyWith(
-                                    color: state.balance.isNegative ? theme.colorScheme.error : theme.colorScheme.primary,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          IconButton.filled(
-                            tooltip: 'Add Transactions',
-                            onPressed: () async {
-                              if (context.mounted) {
-                                final _ = await context.pushNamed(TransactionsScreen.routeName);
-                                await bloc.refresh();
-                              }
-                            },
-                            padding: const EdgeInsets.all(AppSpacing.s),
-                            icon: const Icon(Icons.repeat),
-                          ),
-                        ],
+                      child: DashboardBalanceSection(
+                        balance: state.balance,
+                        onTap: () async {
+                          if (context.mounted) {
+                            final _ = await context.pushNamed(TransactionsScreen.routeName);
+                            await bloc.refresh();
+                          }
+                        },
                       ),
                     ),
                   );
