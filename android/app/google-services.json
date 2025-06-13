@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "626655724211",
+    "project_id": "finance-flow-bd240",
+    "storage_bucket": "finance-flow-bd240.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:626655724211:android:ea61f57f69a4f47ab4e6c6",
+        "android_client_info": {
+          "package_name": "com.example.pedroschwarz.finance_flow"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNPzOq_lUvRU-VNvHtwK4e6ZxM8OZP2Z4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -4,11 +4,13 @@ import 'package:finance_flow/app/storage/app_local_storage.dart';
 import 'package:finance_flow/app/ui/navigation.dart';
 import 'package:finance_flow/auth/auth.dart';
 import 'package:finance_flow/dashboard/dashboard.dart';
+import 'package:finance_flow/firebase_options.dart';
 import 'package:finance_flow/groups/groups.dart';
 import 'package:finance_flow/invites/invites.dart';
 import 'package:finance_flow/splash/splash.dart';
 import 'package:finance_flow/transactions/transactions.dart';
 import 'package:finance_flow/users/users.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
@@ -35,6 +37,8 @@ class Locators extends BaseServiceLocators {
 
   @override
   Future<void> setup() async {
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
     getIt.registerSingleton(
       const FlutterSecureStorage(
         iOptions: IOSOptions(accessibility: KeychainAccessibility.first_unlock_this_device),
