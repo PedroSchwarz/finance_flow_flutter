@@ -1,3 +1,4 @@
+import 'package:finance_flow/transactions/transactions.dart';
 import 'package:finance_flow/users/data/models/user_response.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -10,10 +11,25 @@ abstract class GroupResponse with _$GroupResponse {
     @JsonKey(name: '_id') required String id,
     required String name,
     required String description,
+    required double balance,
     required DateTime createdAt,
     required UserResponse owner,
     required List<UserResponse> members,
+    required List<GroupTransactionResponse> transactions,
   }) = _GroupResponse;
 
   factory GroupResponse.fromJson(Map<String, dynamic> json) => _$GroupResponseFromJson(json);
+}
+
+@freezed
+abstract class GroupTransactionResponse with _$GroupTransactionResponse {
+  const factory GroupTransactionResponse({
+    @JsonKey(name: '_id') required String id,
+    required double amount,
+    required TransactionType type,
+    required UserResponse owner,
+    required DateTime createdAt,
+  }) = _GroupTransactionResponse;
+
+  factory GroupTransactionResponse.fromJson(Map<String, dynamic> json) => _$GroupTransactionResponseFromJson(json);
 }

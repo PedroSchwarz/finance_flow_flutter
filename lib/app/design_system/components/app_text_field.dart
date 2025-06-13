@@ -12,6 +12,7 @@ class AppTextField extends StatefulWidget {
     this.fillColor,
     this.border,
     this.hint,
+    this.helper,
     this.textStyle,
     this.labelStyle,
     this.floatingLabelBehavior,
@@ -32,6 +33,7 @@ class AppTextField extends StatefulWidget {
   final Color? fillColor;
   final InputBorder? border;
   final String? hint;
+  final String? helper;
   final TextStyle? textStyle;
   final TextStyle? labelStyle;
   final FloatingLabelBehavior? floatingLabelBehavior;
@@ -71,6 +73,8 @@ class _AppTextFieldState extends State<AppTextField> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return TextFormField(
       controller: _controller,
       onChanged: widget.onChanged,
@@ -84,11 +88,15 @@ class _AppTextFieldState extends State<AppTextField> {
         fillColor: widget.fillColor,
         enabledBorder: widget.border,
         focusedBorder: widget.border,
+        focusedErrorBorder: widget.border?.copyWith(borderSide: BorderSide(color: Theme.of(context).colorScheme.error)),
+        errorBorder: widget.border?.copyWith(borderSide: BorderSide(color: Theme.of(context).colorScheme.error)),
         floatingLabelBehavior: widget.floatingLabelBehavior,
         labelStyle: widget.labelStyle ?? const TextStyle(),
-        label: Text(widget.label),
+        label: Text(widget.label, style: TextStyle(color: widget.error != null ? theme.colorScheme.error : null)),
+        helperText: widget.helper,
+        helperStyle: theme.textTheme.bodyLarge,
         hintText: widget.hint,
-        error: widget.error != null ? Text(widget.error!) : null,
+        error: widget.error != null ? Text(widget.error!, style: TextStyle(color: theme.colorScheme.error)) : null,
         suffixIcon: widget.suffixIcon,
       ),
     );

@@ -78,48 +78,66 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
                             );
                           },
                         ),
-                        BlocSelector<CreateTransactionCubit, CreateTransactionState, String>(
+                        BlocBuilder<CreateTransactionCubit, CreateTransactionState>(
                           bloc: bloc,
-                          selector: (state) => state.title,
-                          builder: (context, title) {
-                            return AppTextField(
-                              label: 'Title',
-                              initialValue: title,
-                              onChanged: bloc.updateTitle,
-                              textCapitalization: TextCapitalization.words,
+                          buildWhen:
+                              (previous, current) =>
+                                  previous.title != current.title || //
+                                  previous.isLoading != current.isLoading,
+                          builder: (context, state) {
+                            return AppSkeleton(
+                              isLoading: state.isLoading,
+                              child: AppTextField(
+                                label: 'Title',
+                                initialValue: state.title,
+                                onChanged: bloc.updateTitle,
+                                textCapitalization: TextCapitalization.words,
+                              ),
                             );
                           },
                         ),
-                        BlocSelector<CreateTransactionCubit, CreateTransactionState, String?>(
+                        BlocBuilder<CreateTransactionCubit, CreateTransactionState>(
                           bloc: bloc,
-                          selector: (state) => state.description,
-                          builder: (context, description) {
-                            return AppTextField(
-                              label: 'Description',
-                              maxLines: 5,
-                              initialValue: description,
-                              onChanged: bloc.updateDescription,
-                              textCapitalization: TextCapitalization.sentences,
+                          buildWhen:
+                              (previous, current) =>
+                                  previous.description != current.description || //
+                                  previous.isLoading != current.isLoading,
+                          builder: (context, state) {
+                            return AppSkeleton(
+                              isLoading: state.isLoading,
+                              child: AppTextField(
+                                label: 'Description',
+                                maxLines: 5,
+                                initialValue: state.description,
+                                onChanged: bloc.updateDescription,
+                                textCapitalization: TextCapitalization.sentences,
+                              ),
                             );
                           },
                         ),
                         const Gap(AppSpacing.s),
-                        BlocSelector<CreateTransactionCubit, CreateTransactionState, double>(
+                        BlocBuilder<CreateTransactionCubit, CreateTransactionState>(
                           bloc: bloc,
-                          selector: (state) => state.amount,
-                          builder: (context, amount) {
-                            return AppTextField(
-                              label: 'Amount',
-                              currencyValue: amount,
-                              onChanged: (value) {
-                                bloc.updateAmount(CurrencyInputFormatter.parseFormatted(value));
-                              },
-                              labelStyle: theme.textTheme.titleLarge?.copyWith(color: theme.colorScheme.secondary),
-                              textStyle: theme.textTheme.displayMedium,
-                              fillColor: Colors.transparent,
-                              border: UnderlineInputBorder(borderSide: BorderSide(color: theme.colorScheme.primary)),
-                              inputFormatters: [CurrencyInputFormatter()],
-                              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                          buildWhen:
+                              (previous, current) =>
+                                  previous.description != current.description || //
+                                  previous.isLoading != current.isLoading,
+                          builder: (context, state) {
+                            return AppSkeleton(
+                              isLoading: state.isLoading,
+                              child: AppTextField(
+                                label: 'Amount',
+                                currencyValue: state.amount,
+                                onChanged: (value) {
+                                  bloc.updateAmount(CurrencyInputFormatter.parseFormatted(value));
+                                },
+                                labelStyle: theme.textTheme.titleLarge?.copyWith(color: theme.colorScheme.secondary),
+                                textStyle: theme.textTheme.displayMedium,
+                                fillColor: Colors.transparent,
+                                border: UnderlineInputBorder(borderSide: BorderSide(color: theme.colorScheme.primary)),
+                                inputFormatters: [CurrencyInputFormatter()],
+                                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                              ),
                             );
                           },
                         ),

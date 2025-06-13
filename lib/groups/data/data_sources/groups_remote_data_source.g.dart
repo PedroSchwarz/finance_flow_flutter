@@ -125,6 +125,34 @@ class _GroupsRemoteDataSource implements GroupsRemoteDataSource {
   }
 
   @override
+  Future<void> addTransaction(
+    String id,
+    CreateGroupTransactionRequest request,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Content-Type': 'application/json'};
+    _headers.removeWhere((k, v) => v == null);
+    final _data = request;
+    final _options = _setStreamType<void>(
+      Options(
+            method: 'POST',
+            headers: _headers,
+            extra: _extra,
+            contentType: 'application/json',
+          )
+          .compose(
+            _dio.options,
+            '/${id}/transaction',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    await _dio.fetch<void>(_options);
+  }
+
+  @override
   Future<void> addMember(String id) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};

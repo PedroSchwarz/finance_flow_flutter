@@ -74,7 +74,7 @@ class Locators extends BaseServiceLocators {
         () => CreateGroupCubit(authRepository: getIt(), groupsRepository: getIt(), invitesRepository: getIt(), usersRepository: getIt()),
       )
       ..registerFactory(() => InvitesCubit(invitesRepository: getIt(), groupsRepository: getIt()))
-      ..registerFactory(() => GroupDetailsCubit(authRepository: getIt(), groupsRepository: getIt()))
+      ..registerFactory(() => GroupDetailsCubit(authRepository: getIt(), usersRepository: getIt(), groupsRepository: getIt()))
       ..registerFactory(
         () => DashboardCubit(authRepository: getIt(), groupsRepository: getIt(), invitesRepository: getIt(), usersRepository: getIt()),
       )

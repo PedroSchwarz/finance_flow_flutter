@@ -28,6 +28,8 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return BlocListener<CreateGroupCubit, CreateGroupState>(
       bloc: bloc,
       listenWhen: (previous, current) => previous.showInviteUsersSheet != current.showInviteUsersSheet,
@@ -99,7 +101,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                               buildWhen:
                                   (previous, current) =>
                                       previous.isLoading != current.isLoading || //
-                                      previous.name != current.name,
+                                      previous.description != current.description,
                               builder: (context, state) {
                                 return AppSkeleton(
                                   isLoading: state.isLoading,
@@ -113,6 +115,35 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                                 );
                               },
                             ),
+                            if (widget.id == null)
+                              BlocBuilder<CreateGroupCubit, CreateGroupState>(
+                                bloc: bloc,
+                                buildWhen:
+                                    (previous, current) =>
+                                        previous.isLoading != current.isLoading || //
+                                        previous.amount != current.amount || //
+                                        previous.maxBalance != current.maxBalance,
+                                builder: (context, state) {
+                                  return AppSkeleton(
+                                    isLoading: state.isLoading,
+                                    child: AppTextField(
+                                      label: 'Initial Deposit',
+                                      currencyValue: state.amount,
+                                      onChanged: (value) {
+                                        bloc.updateAmount(CurrencyInputFormatter.parseFormatted(value));
+                                      },
+                                      labelStyle: theme.textTheme.titleLarge?.copyWith(color: theme.colorScheme.secondary),
+                                      textStyle: theme.textTheme.displayMedium,
+                                      helper: 'Available balance: ${CurrencyInputFormatter.getFormatted(state.maxBalance)}',
+                                      fillColor: Colors.transparent,
+                                      error: state.isAmountValid ? null : 'Invalid amount',
+                                      border: UnderlineInputBorder(borderSide: BorderSide(color: theme.colorScheme.primary)),
+                                      inputFormatters: [CurrencyInputFormatter()],
+                                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                    ),
+                                  );
+                                },
+                              ),
                             BlocBuilder<CreateGroupCubit, CreateGroupState>(
                               bloc: bloc,
                               buildWhen:

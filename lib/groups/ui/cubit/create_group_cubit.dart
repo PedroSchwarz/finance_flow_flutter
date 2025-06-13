@@ -1,6 +1,7 @@
 import 'package:finance_flow/auth/auth.dart';
 import 'package:finance_flow/groups/groups.dart';
 import 'package:finance_flow/invites/invites.dart';
+import 'package:finance_flow/transactions/transactions.dart';
 import 'package:finance_flow/users/users.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -9,13 +10,15 @@ import 'package:logging/logging.dart';
 part 'create_group_cubit.freezed.dart';
 
 class CreateGroupCubit extends Cubit<CreateGroupState> {
-  CreateGroupCubit({required this.authRepository, required this.groupsRepository, required this.invitesRepository, required this.usersRepository})
+  CreateGroupCubit({required this.authRepository, required this.usersRepository, required this.groupsRepository, required this.invitesRepository})
     : super(
         const CreateGroupState(
+          maxBalance: 0,
           users: [],
           selectedUsersIds: [],
           name: '',
           description: '',
+          amount: 0,
           showInviteUsersSheet: false,
           isLoading: false,
           isSubmitting: false,
@@ -30,18 +33,27 @@ class CreateGroupCubit extends Cubit<CreateGroupState> {
   final AuthRepository authRepository;
 
   @visibleForTesting
+  final UsersRepository usersRepository;
+
+  @visibleForTesting
   final GroupsRepository groupsRepository;
 
   @visibleForTesting
   final InvitesRepository invitesRepository;
 
-  @visibleForTesting
-  final UsersRepository usersRepository;
-
   UserData get currentUser => authRepository.currentUser.value!;
 
   Future<void> load(String? id) async {
-    await Future.wait([loadUsers(), if (id != null) loadGroup(id)]);
+    await Future.wait([loadUsers(), if (id == null) loadBalance(), if (id != null) loadGroup(id)]);
+  }
+
+  Future<void> loadBalance() async {
+    try {
+      final balance = await usersRepository.getBalance();
+      emit(state.copyWith(maxBalance: balance));
+    } catch (e) {
+      _log.severe('Error while loading users balance: $e', e);
+    }
   }
 
   Future<void> loadUsers() async {
@@ -81,6 +93,10 @@ class CreateGroupCubit extends Cubit<CreateGroupState> {
     emit(state.copyWith(description: description));
   }
 
+  void updateAmount(double amount) {
+    emit(state.copyWith(amount: amount));
+  }
+
   void toggleInviteUsersSheet() {
     emit(state.copyWith(showInviteUsersSheet: !state.showInviteUsersSheet));
   }
@@ -105,7 +121,11 @@ class CreateGroupCubit extends Cubit<CreateGroupState> {
     try {
       final groupId = await groupsRepository.createGroup(name: state.name, description: state.description);
 
-      await Future.wait([for (final id in state.selectedUsersIds) invitesRepository.create(groupId: groupId, userId: id)]);
+      await Future.wait([
+        for (final id in state.selectedUsersIds) invitesRepository.create(groupId: groupId, userId: id),
+        if (state.amount > 0)
+          groupsRepository.addTransactionToGroup(groupId, CreateGroupTransactionRequest(amount: state.amount, type: TransactionType.income)),
+      ]);
 
       emit(state.copyWith(shouldGoBack: true));
     } catch (e) {
@@ -170,10 +190,12 @@ class CreateGroupCubit extends Cubit<CreateGroupState> {
 @freezed
 sealed class CreateGroupState with _$CreateGroupState {
   const factory CreateGroupState({
+    required double maxBalance,
     required List<UserResponse> users,
     required List<String> selectedUsersIds,
     required String name,
     required String description,
+    required double amount,
     required bool showInviteUsersSheet,
     required bool isLoading,
     required bool isSubmitting,
@@ -186,7 +208,9 @@ sealed class CreateGroupState with _$CreateGroupState {
 
   bool get isUpdating => group != null;
 
-  bool get isFormValid => name.isNotEmpty;
+  bool get isAmountValid => maxBalance.isNegative ? amount == 0 : amount <= maxBalance;
+
+  bool get isFormValid => name.isNotEmpty && isAmountValid;
 
   bool get canSubmit => isFormValid && !isLoading && !isSubmitting;
 }

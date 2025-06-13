@@ -1,7 +1,5 @@
 import 'package:dio/dio.dart' hide Headers;
-import 'package:finance_flow/groups/data/models/create_group_request.dart';
-import 'package:finance_flow/groups/data/models/group_response.dart';
-import 'package:finance_flow/groups/data/models/update_group_request.dart';
+import 'package:finance_flow/groups/groups.dart';
 import 'package:retrofit/retrofit.dart';
 
 part 'groups_remote_data_source.g.dart';
@@ -21,6 +19,10 @@ abstract class GroupsRemoteDataSource {
   @POST('/')
   @Headers(<String, dynamic>{'Content-Type': 'application/json'})
   Future<String> create(@Body() CreateGroupRequest request);
+
+  @POST('/{id}/transaction')
+  @Headers(<String, dynamic>{'Content-Type': 'application/json'})
+  Future<void> addTransaction(@Path('id') String id, @Body() CreateGroupTransactionRequest request);
 
   @POST('/{id}/member')
   @Headers(<String, dynamic>{'Content-Type': 'application/json'})

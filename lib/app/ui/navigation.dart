@@ -59,7 +59,25 @@ GoRouter createRouter({required AuthRepository authRepository}) {
         },
         routes: [
           GoRoute(path: '/${InvitesScreen.routeName}', name: InvitesScreen.routeName, builder: (context, state) => const InvitesScreen()),
-          GoRoute(path: '/${CreateGroupScreen.routeName}', name: CreateGroupScreen.routeName, builder: (context, state) => const CreateGroupScreen()),
+          GoRoute(
+            path: '/${CreateGroupScreen.routeName}',
+            name: CreateGroupScreen.routeName,
+            builder: (context, state) {
+              final id = state.uri.queryParameters['id'];
+
+              return CreateGroupScreen(id: id);
+            },
+          ),
+          GoRoute(
+            path: '/${GroupDetailsScreen.routeName}/:id',
+            name: GroupDetailsScreen.routeName,
+            builder: (context, state) {
+              final id = state.pathParameters['id'] ?? '';
+              final name = state.uri.queryParameters['name'] ?? '';
+
+              return GroupDetailsScreen(id: id, name: name);
+            },
+          ),
           GoRoute(
             path: '/${TransactionsScreen.routeName}',
             name: TransactionsScreen.routeName,

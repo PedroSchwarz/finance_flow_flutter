@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CreateGroupState {
 
- List<UserResponse> get users; List<String> get selectedUsersIds; String get name; String get description; bool get showInviteUsersSheet; bool get isLoading; bool get isSubmitting; bool get showDeleteDialog; bool get shouldGoBack; GroupResponse? get group;
+ double get maxBalance; List<UserResponse> get users; List<String> get selectedUsersIds; String get name; String get description; double get amount; bool get showInviteUsersSheet; bool get isLoading; bool get isSubmitting; bool get showDeleteDialog; bool get shouldGoBack; GroupResponse? get group;
 /// Create a copy of CreateGroupState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -26,16 +26,16 @@ $CreateGroupStateCopyWith<CreateGroupState> get copyWith => _$CreateGroupStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CreateGroupState&&const DeepCollectionEquality().equals(other.users, users)&&const DeepCollectionEquality().equals(other.selectedUsersIds, selectedUsersIds)&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.showInviteUsersSheet, showInviteUsersSheet) || other.showInviteUsersSheet == showInviteUsersSheet)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isSubmitting, isSubmitting) || other.isSubmitting == isSubmitting)&&(identical(other.showDeleteDialog, showDeleteDialog) || other.showDeleteDialog == showDeleteDialog)&&(identical(other.shouldGoBack, shouldGoBack) || other.shouldGoBack == shouldGoBack)&&(identical(other.group, group) || other.group == group));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CreateGroupState&&(identical(other.maxBalance, maxBalance) || other.maxBalance == maxBalance)&&const DeepCollectionEquality().equals(other.users, users)&&const DeepCollectionEquality().equals(other.selectedUsersIds, selectedUsersIds)&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.showInviteUsersSheet, showInviteUsersSheet) || other.showInviteUsersSheet == showInviteUsersSheet)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isSubmitting, isSubmitting) || other.isSubmitting == isSubmitting)&&(identical(other.showDeleteDialog, showDeleteDialog) || other.showDeleteDialog == showDeleteDialog)&&(identical(other.shouldGoBack, shouldGoBack) || other.shouldGoBack == shouldGoBack)&&(identical(other.group, group) || other.group == group));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(users),const DeepCollectionEquality().hash(selectedUsersIds),name,description,showInviteUsersSheet,isLoading,isSubmitting,showDeleteDialog,shouldGoBack,group);
+int get hashCode => Object.hash(runtimeType,maxBalance,const DeepCollectionEquality().hash(users),const DeepCollectionEquality().hash(selectedUsersIds),name,description,amount,showInviteUsersSheet,isLoading,isSubmitting,showDeleteDialog,shouldGoBack,group);
 
 @override
 String toString() {
-  return 'CreateGroupState(users: $users, selectedUsersIds: $selectedUsersIds, name: $name, description: $description, showInviteUsersSheet: $showInviteUsersSheet, isLoading: $isLoading, isSubmitting: $isSubmitting, showDeleteDialog: $showDeleteDialog, shouldGoBack: $shouldGoBack, group: $group)';
+  return 'CreateGroupState(maxBalance: $maxBalance, users: $users, selectedUsersIds: $selectedUsersIds, name: $name, description: $description, amount: $amount, showInviteUsersSheet: $showInviteUsersSheet, isLoading: $isLoading, isSubmitting: $isSubmitting, showDeleteDialog: $showDeleteDialog, shouldGoBack: $shouldGoBack, group: $group)';
 }
 
 
@@ -46,7 +46,7 @@ abstract mixin class $CreateGroupStateCopyWith<$Res>  {
   factory $CreateGroupStateCopyWith(CreateGroupState value, $Res Function(CreateGroupState) _then) = _$CreateGroupStateCopyWithImpl;
 @useResult
 $Res call({
- List<UserResponse> users, List<String> selectedUsersIds, String name, String description, bool showInviteUsersSheet, bool isLoading, bool isSubmitting, bool showDeleteDialog, bool shouldGoBack, GroupResponse? group
+ double maxBalance, List<UserResponse> users, List<String> selectedUsersIds, String name, String description, double amount, bool showInviteUsersSheet, bool isLoading, bool isSubmitting, bool showDeleteDialog, bool shouldGoBack, GroupResponse? group
 });
 
 
@@ -63,13 +63,15 @@ class _$CreateGroupStateCopyWithImpl<$Res>
 
 /// Create a copy of CreateGroupState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? users = null,Object? selectedUsersIds = null,Object? name = null,Object? description = null,Object? showInviteUsersSheet = null,Object? isLoading = null,Object? isSubmitting = null,Object? showDeleteDialog = null,Object? shouldGoBack = null,Object? group = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? maxBalance = null,Object? users = null,Object? selectedUsersIds = null,Object? name = null,Object? description = null,Object? amount = null,Object? showInviteUsersSheet = null,Object? isLoading = null,Object? isSubmitting = null,Object? showDeleteDialog = null,Object? shouldGoBack = null,Object? group = freezed,}) {
   return _then(_self.copyWith(
-users: null == users ? _self.users : users // ignore: cast_nullable_to_non_nullable
+maxBalance: null == maxBalance ? _self.maxBalance : maxBalance // ignore: cast_nullable_to_non_nullable
+as double,users: null == users ? _self.users : users // ignore: cast_nullable_to_non_nullable
 as List<UserResponse>,selectedUsersIds: null == selectedUsersIds ? _self.selectedUsersIds : selectedUsersIds // ignore: cast_nullable_to_non_nullable
 as List<String>,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
-as String,showInviteUsersSheet: null == showInviteUsersSheet ? _self.showInviteUsersSheet : showInviteUsersSheet // ignore: cast_nullable_to_non_nullable
+as String,amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
+as double,showInviteUsersSheet: null == showInviteUsersSheet ? _self.showInviteUsersSheet : showInviteUsersSheet // ignore: cast_nullable_to_non_nullable
 as bool,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,isSubmitting: null == isSubmitting ? _self.isSubmitting : isSubmitting // ignore: cast_nullable_to_non_nullable
 as bool,showDeleteDialog: null == showDeleteDialog ? _self.showDeleteDialog : showDeleteDialog // ignore: cast_nullable_to_non_nullable
@@ -98,9 +100,10 @@ $GroupResponseCopyWith<$Res>? get group {
 
 
 class _CreateGroupState extends CreateGroupState {
-  const _CreateGroupState({required final  List<UserResponse> users, required final  List<String> selectedUsersIds, required this.name, required this.description, required this.showInviteUsersSheet, required this.isLoading, required this.isSubmitting, required this.showDeleteDialog, required this.shouldGoBack, this.group}): _users = users,_selectedUsersIds = selectedUsersIds,super._();
+  const _CreateGroupState({required this.maxBalance, required final  List<UserResponse> users, required final  List<String> selectedUsersIds, required this.name, required this.description, required this.amount, required this.showInviteUsersSheet, required this.isLoading, required this.isSubmitting, required this.showDeleteDialog, required this.shouldGoBack, this.group}): _users = users,_selectedUsersIds = selectedUsersIds,super._();
   
 
+@override final  double maxBalance;
  final  List<UserResponse> _users;
 @override List<UserResponse> get users {
   if (_users is EqualUnmodifiableListView) return _users;
@@ -117,6 +120,7 @@ class _CreateGroupState extends CreateGroupState {
 
 @override final  String name;
 @override final  String description;
+@override final  double amount;
 @override final  bool showInviteUsersSheet;
 @override final  bool isLoading;
 @override final  bool isSubmitting;
@@ -134,16 +138,16 @@ _$CreateGroupStateCopyWith<_CreateGroupState> get copyWith => __$CreateGroupStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreateGroupState&&const DeepCollectionEquality().equals(other._users, _users)&&const DeepCollectionEquality().equals(other._selectedUsersIds, _selectedUsersIds)&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.showInviteUsersSheet, showInviteUsersSheet) || other.showInviteUsersSheet == showInviteUsersSheet)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isSubmitting, isSubmitting) || other.isSubmitting == isSubmitting)&&(identical(other.showDeleteDialog, showDeleteDialog) || other.showDeleteDialog == showDeleteDialog)&&(identical(other.shouldGoBack, shouldGoBack) || other.shouldGoBack == shouldGoBack)&&(identical(other.group, group) || other.group == group));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreateGroupState&&(identical(other.maxBalance, maxBalance) || other.maxBalance == maxBalance)&&const DeepCollectionEquality().equals(other._users, _users)&&const DeepCollectionEquality().equals(other._selectedUsersIds, _selectedUsersIds)&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.showInviteUsersSheet, showInviteUsersSheet) || other.showInviteUsersSheet == showInviteUsersSheet)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isSubmitting, isSubmitting) || other.isSubmitting == isSubmitting)&&(identical(other.showDeleteDialog, showDeleteDialog) || other.showDeleteDialog == showDeleteDialog)&&(identical(other.shouldGoBack, shouldGoBack) || other.shouldGoBack == shouldGoBack)&&(identical(other.group, group) || other.group == group));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_users),const DeepCollectionEquality().hash(_selectedUsersIds),name,description,showInviteUsersSheet,isLoading,isSubmitting,showDeleteDialog,shouldGoBack,group);
+int get hashCode => Object.hash(runtimeType,maxBalance,const DeepCollectionEquality().hash(_users),const DeepCollectionEquality().hash(_selectedUsersIds),name,description,amount,showInviteUsersSheet,isLoading,isSubmitting,showDeleteDialog,shouldGoBack,group);
 
 @override
 String toString() {
-  return 'CreateGroupState(users: $users, selectedUsersIds: $selectedUsersIds, name: $name, description: $description, showInviteUsersSheet: $showInviteUsersSheet, isLoading: $isLoading, isSubmitting: $isSubmitting, showDeleteDialog: $showDeleteDialog, shouldGoBack: $shouldGoBack, group: $group)';
+  return 'CreateGroupState(maxBalance: $maxBalance, users: $users, selectedUsersIds: $selectedUsersIds, name: $name, description: $description, amount: $amount, showInviteUsersSheet: $showInviteUsersSheet, isLoading: $isLoading, isSubmitting: $isSubmitting, showDeleteDialog: $showDeleteDialog, shouldGoBack: $shouldGoBack, group: $group)';
 }
 
 
@@ -154,7 +158,7 @@ abstract mixin class _$CreateGroupStateCopyWith<$Res> implements $CreateGroupSta
   factory _$CreateGroupStateCopyWith(_CreateGroupState value, $Res Function(_CreateGroupState) _then) = __$CreateGroupStateCopyWithImpl;
 @override @useResult
 $Res call({
- List<UserResponse> users, List<String> selectedUsersIds, String name, String description, bool showInviteUsersSheet, bool isLoading, bool isSubmitting, bool showDeleteDialog, bool shouldGoBack, GroupResponse? group
+ double maxBalance, List<UserResponse> users, List<String> selectedUsersIds, String name, String description, double amount, bool showInviteUsersSheet, bool isLoading, bool isSubmitting, bool showDeleteDialog, bool shouldGoBack, GroupResponse? group
 });
 
 
@@ -171,13 +175,15 @@ class __$CreateGroupStateCopyWithImpl<$Res>
 
 /// Create a copy of CreateGroupState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? users = null,Object? selectedUsersIds = null,Object? name = null,Object? description = null,Object? showInviteUsersSheet = null,Object? isLoading = null,Object? isSubmitting = null,Object? showDeleteDialog = null,Object? shouldGoBack = null,Object? group = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? maxBalance = null,Object? users = null,Object? selectedUsersIds = null,Object? name = null,Object? description = null,Object? amount = null,Object? showInviteUsersSheet = null,Object? isLoading = null,Object? isSubmitting = null,Object? showDeleteDialog = null,Object? shouldGoBack = null,Object? group = freezed,}) {
   return _then(_CreateGroupState(
-users: null == users ? _self._users : users // ignore: cast_nullable_to_non_nullable
+maxBalance: null == maxBalance ? _self.maxBalance : maxBalance // ignore: cast_nullable_to_non_nullable
+as double,users: null == users ? _self._users : users // ignore: cast_nullable_to_non_nullable
 as List<UserResponse>,selectedUsersIds: null == selectedUsersIds ? _self._selectedUsersIds : selectedUsersIds // ignore: cast_nullable_to_non_nullable
 as List<String>,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
-as String,showInviteUsersSheet: null == showInviteUsersSheet ? _self.showInviteUsersSheet : showInviteUsersSheet // ignore: cast_nullable_to_non_nullable
+as String,amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
+as double,showInviteUsersSheet: null == showInviteUsersSheet ? _self.showInviteUsersSheet : showInviteUsersSheet // ignore: cast_nullable_to_non_nullable
 as bool,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,isSubmitting: null == isSubmitting ? _self.isSubmitting : isSubmitting // ignore: cast_nullable_to_non_nullable
 as bool,showDeleteDialog: null == showDeleteDialog ? _self.showDeleteDialog : showDeleteDialog // ignore: cast_nullable_to_non_nullable

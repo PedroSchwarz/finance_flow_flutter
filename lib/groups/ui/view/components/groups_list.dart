@@ -27,6 +27,7 @@ class GroupsList extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        const Gap(AppSpacing.m),
         Padding(padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s), child: Text('Groups', style: theme.textTheme.headlineSmall)),
         Expanded(
           child: RefreshIndicator(

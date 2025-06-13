@@ -45,12 +45,12 @@ class DashboardCubit extends Cubit<DashboardState> {
   }
 
   Future<void> loadGroups() async {
-    // try {
-    //   final groups = await groupsRepository.getGroups();
-    //   emit(state.copyWith(groups: groups));
-    // } catch (e) {
-    //   _log.severe('Error while loading groups: $e', e);
-    // }
+    try {
+      final groups = await groupsRepository.getGroups();
+      emit(state.copyWith(groups: groups));
+    } catch (e) {
+      _log.severe('Error while loading groups: $e', e);
+    }
   }
 
   Future<void> loadInvites() async {

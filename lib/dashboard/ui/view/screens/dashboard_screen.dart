@@ -1,5 +1,5 @@
 import 'package:finance_flow/app/app.dart';
-import 'package:finance_flow/dashboard/ui/cubit/dashboard_cubit.dart';
+import 'package:finance_flow/dashboard/dashboard.dart';
 import 'package:finance_flow/dashboard/ui/view/components/dashboard_invites_button.dart';
 import 'package:finance_flow/groups/groups.dart';
 import 'package:finance_flow/invites/invites.dart';
@@ -31,6 +31,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final theme = Theme.of(context);
 
     return Scaffold(
+      drawer: DashboardDrawer(
+        initials: bloc.currentUser.initials,
+        title: bloc.currentUser.completeName,
+        subtitle: bloc.currentUser.email,
+        onSignOut: bloc.signOut,
+      ),
       body: NestedScrollView(
         headerSliverBuilder:
             (_, __) => [
@@ -88,6 +94,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                           ),
                           IconButton.filled(
+                            tooltip: 'Add Transactions',
                             onPressed: () async {
                               if (context.mounted) {
                                 final _ = await context.pushNamed(TransactionsScreen.routeName);
@@ -148,7 +155,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             final result = await context.pushNamed<bool>(CreateGroupScreen.routeName);
 
             if (result ?? false) {
-              bloc.loadGroups();
+              bloc.refresh();
             }
           }
         },

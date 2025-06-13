@@ -1,4 +1,3 @@
-import 'package:calendar_pager/calendar_pager.dart';
 import 'package:finance_flow/app/app.dart';
 import 'package:finance_flow/groups/groups.dart';
 import 'package:flutter/material.dart';
@@ -65,16 +64,45 @@ class _GroupDetailsScreenState extends State<GroupDetailsScreen> {
                 SliverToBoxAdapter(
                   child: BlocBuilder<GroupDetailsCubit, GroupDetailsState>(
                     bloc: bloc,
-                    buildWhen: (previous, current) => previous.group != current.group,
+                    buildWhen:
+                        (previous, current) =>
+                            previous.isLoading != current.isLoading || //
+                            previous.group != current.group,
+                    builder: (context, state) {
+                      final group = state.group;
+
+                      if (group == null) {
+                        return const SizedBox.shrink();
+                      }
+
+                      return Padding(
+                        padding: const EdgeInsets.all(AppSpacing.s),
+                        child: AppSkeleton(
+                          isLoading: state.isLoading,
+                          child: Text(
+                            CurrencyInputFormatter.getFormatted(group.balance),
+                            style: theme.textTheme.displaySmall?.copyWith(color: group.balance < 0 ? theme.colorScheme.error : Colors.green),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: BlocBuilder<GroupDetailsCubit, GroupDetailsState>(
+                    bloc: bloc,
+                    buildWhen:
+                        (previous, current) =>
+                            previous.group != current.group || //
+                            previous.selectedMember != current.selectedMember,
                     builder: (context, state) {
                       final group = state.group;
                       final isOwner = group?.owner.id == bloc.currentUser.id;
 
-                      return ExpansionTile(
-                        title: Text('Details', style: theme.textTheme.titleMedium?.copyWith(color: theme.colorScheme.secondary)),
-                        shape: const RoundedRectangleBorder(),
-                        tilePadding: const EdgeInsets.symmetric(horizontal: AppSpacing.s),
+                      return Column(
+                        spacing: AppSpacing.xxs,
                         children: [
+                          const Gap(AppSpacing.xs),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s),
                             child: Row(
@@ -119,58 +147,108 @@ class _GroupDetailsScreenState extends State<GroupDetailsScreen> {
                               ],
                             ),
                           ),
-                          const Gap(AppSpacing.xxs),
                           const Divider(),
-                          const Gap(AppSpacing.xs),
-                          AppSkeleton(
-                            isLoading: group == null,
-                            child: SizedBox(
-                              height: 40,
+                          if (group == null)
+                            const SizedBox.shrink()
+                          else
+                            SizedBox(
+                              height: 68,
                               child: ListView.separated(
+                                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
                                 scrollDirection: Axis.horizontal,
-                                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s),
-                                itemCount: group?.members.length ?? 0,
+                                itemCount: group.members.length,
                                 itemBuilder: (context, position) {
-                                  final member = group!.members[position];
+                                  final member = group.members[position];
+                                  final isSelected = state.selectedMember == member;
 
-                                  if (position == 0) {
-                                    return Row(spacing: AppSpacing.s, children: [const Text('Members:'), CircleAvatar(child: Text(member.initials))]);
-                                  }
-                                  return CircleAvatar(child: Text(member.initials));
+                                  return Material(
+                                    color: isSelected ? theme.colorScheme.surfaceContainer : Colors.transparent,
+                                    borderRadius: BorderRadius.circular(AppSpacing.xs),
+                                    child: InkWell(
+                                      onTap: () {
+                                        bloc.updateSelectedMember(member);
+                                      },
+                                      borderRadius: BorderRadius.circular(AppSpacing.xs),
+                                      child: AnimatedContainer(
+                                        duration: const Duration(milliseconds: 400),
+                                        padding: const EdgeInsets.all(AppSpacing.xs),
+                                        decoration: BoxDecoration(
+                                          border: Border.all(color: isSelected ? theme.colorScheme.primary : Colors.transparent),
+                                          borderRadius: BorderRadius.circular(AppSpacing.xs),
+                                        ),
+                                        child: Row(
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Stack(
+                                              alignment: Alignment.center,
+                                              children: [
+                                                SizedBox(
+                                                  width: 40,
+                                                  height: 40,
+                                                  child: CircularProgressIndicator(value: state.memberDepositPercentage, color: Colors.blue),
+                                                ),
+                                                CircleAvatar(child: Text(member.initials)),
+                                              ],
+                                            ),
+                                            const Gap(AppSpacing.s),
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(CurrencyInputFormatter.getFormatted(state.memberDeposit), style: theme.textTheme.titleMedium),
+                                                const Gap(AppSpacing.xxxs),
+                                                Text('${state.formattedMemberDepositPercentage}%', style: theme.textTheme.titleMedium),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  );
                                 },
-                                separatorBuilder: (__, _) => const Gap(AppSpacing.xs),
+                                separatorBuilder: (__, _) {
+                                  return const Padding(padding: EdgeInsets.symmetric(horizontal: AppSpacing.xs), child: VerticalDivider());
+                                },
                               ),
                             ),
-                          ),
-                          const Gap(AppSpacing.s),
                         ],
                       );
                     },
-                  ),
-                ),
-                SliverToBoxAdapter(
-                  child: SizedBox(
-                    height: CalendarPagerViewConstants.collapsedHeight,
-                    child: CalendarPagerView(
-                      theme: CalendarPagerTheme.from(
-                        background: theme.scaffoldBackgroundColor,
-                        accent: theme.colorScheme.primary,
-                        headerTitle: theme.textTheme.headlineLarge!,
-                        itemBorder: theme.colorScheme.primary,
-                        onAccent: theme.colorScheme.onPrimary,
-                        hasShadow: false,
-                      ),
-                      hasHeader: false,
-                      onDateSelected: bloc.updateSelectedDate,
-                    ),
                   ),
                 ),
               ];
             },
             body: BlocBuilder<GroupDetailsCubit, GroupDetailsState>(
               bloc: bloc,
+              buildWhen:
+                  (previous, current) =>
+                      previous.group != current.group || //
+                      previous.dateSort != current.dateSort || //
+                      previous.isLoading != current.isLoading,
               builder: (context, state) {
-                return const Text('No items for now.');
+                final group = state.group;
+
+                if (state.isLoading || group == null) {
+                  return const GroupLoadingTransactionsList();
+                }
+
+                if (group.transactions.isEmpty) {
+                  return const GroupEmptyTransactions(message: 'No movements made for this group yet.');
+                }
+
+                if (state.filteredTransactions.isEmpty) {
+                  return const GroupEmptyTransactions(message: 'No movements found for the selected filters.');
+                }
+
+                return GroupTransactionsList(
+                  transactions: state.filteredTransactions,
+                  onRefresh: () async {
+                    await bloc.refresh(groupId: widget.id);
+                  },
+                  dateSort: state.dateSort,
+                  onDateSortChanged: (dateSort) {
+                    bloc.updateDateSort(dateSort!);
+                  },
+                );
               },
             ),
           ),
@@ -178,15 +256,42 @@ class _GroupDetailsScreenState extends State<GroupDetailsScreen> {
           floatingActionButton: FloatingActionButton.extended(
             onPressed: () async {
               if (context.mounted) {
-                // final result = await context.pushNamed<bool>(CreateTaskScreen.routeName, pathParameters: {'id': widget.id});
-
-                // if (result ?? false) {
-                //   bloc.load(groupId: widget.id);
-                // }
+                final _ = await showModalBottomSheet(
+                  context: context,
+                  builder: (context) {
+                    return BlocBuilder<GroupDetailsCubit, GroupDetailsState>(
+                      bloc: bloc,
+                      buildWhen:
+                          (previous, current) =>
+                              previous.transactionType != current.transactionType ||
+                              previous.depositAmount != current.depositAmount ||
+                              previous.userBalance != current.userBalance ||
+                              previous.memberDeposit != current.memberDeposit,
+                      builder: (context, state) {
+                        return MakeGroupTransactionSheet(
+                          transactionType: state.transactionType,
+                          onTransactionTypeChanged: bloc.updateTransactionType,
+                          depositAmount: state.depositAmount,
+                          onDepositAmountChanged: bloc.updateDepositAmount,
+                          memberDeposit: state.memberDeposit,
+                          userBalance: state.userBalance,
+                          canSubmit: state.canSubmit,
+                          onSubmit: () async {
+                            if (context.mounted) {
+                              context.pop();
+                            }
+                            await bloc.makeTransaction();
+                          },
+                        );
+                      },
+                    );
+                  },
+                );
+                bloc.resetTransactionForm();
               }
             },
-            label: const Text('Create Something'),
-            icon: const Icon(Icons.add),
+            label: const Text('Make Movement'),
+            icon: const Icon(Icons.repeat),
           ),
         ),
       ),
@@ -196,8 +301,8 @@ class _GroupDetailsScreenState extends State<GroupDetailsScreen> {
   void _listenLeaveDialog(BuildContext context, GroupDetailsState state) {
     if (state.showLeaveDialog) {
       showDialog(
-        barrierDismissible: false,
         context: context,
+        barrierDismissible: false,
         builder: (context) {
           return AlertDialog(
             title: const Text('Leave Group?'),
