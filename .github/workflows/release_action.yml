@@ -49,9 +49,9 @@ jobs:
           GOOGLE_APPLICATION_CREDENTIALS: firebase-service-account.json
         run: |
           echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}' > firebase-service-account.json
-          firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk \
-            --app ${{ secrets.FIREBASE_ANDROID_APP_ID }} \
-            --groups internal \
+          firebase appdistribution:distribute "build/app/outputs/flutter-apk/app-release.apk" \
+            --app "${{ secrets.FIREBASE_ANDROID_APP_ID }}" \
+            --groups "internal" \
             --release-notes "Automated build from branch: ${{ github.ref_name }}, Commit: ${{ github.sha }}"
           rm firebase-service-account.json
 
@@ -133,10 +133,17 @@ jobs:
           GOOGLE_APPLICATION_CREDENTIALS: firebase-service-account.json
         run: |
           echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}' > firebase-service-account.json
-          firebase appdistribution:distribute ios/build/*.ipa \
-            --app ${{ secrets.FIREBASE_IOS_APP_ID }} \
-            --groups internal \
+          
+          # Find the IPA file
+          IPA_FILE=$(find ios/build -name "*.ipa" | head -1)
+          echo "Found IPA file: $IPA_FILE"
+          
+          # Upload to Firebase App Distribution
+          firebase appdistribution:distribute "$IPA_FILE" \
+            --app "${{ secrets.FIREBASE_IOS_APP_ID }}" \
+            --groups "internal" \
             --release-notes "Automated build from branch: ${{ github.ref_name }}, Commit: ${{ github.sha }}"
+          
           rm firebase-service-account.json
 
       - name: Upload IPA as artifact
