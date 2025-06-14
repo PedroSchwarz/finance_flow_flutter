@@ -187,9 +187,9 @@ class _GroupDetailsScreenState extends State<GroupDetailsScreen> {
                                               SizedBox(
                                                 width: 40,
                                                 height: 40,
-                                                child: CircularProgressIndicator(value: state.memberDepositPercentage, color: Colors.blue),
+                                                child: CircularProgressIndicator(value: state.memberDepositPercentage, color: Colors.blueAccent),
                                               ),
-                                              CircleAvatar(child: Text(member.initials)),
+                                              CircleAvatar(radius: 18, child: Text(member.initials)),
                                             ],
                                           ),
                                           const Gap(AppSpacing.s),
@@ -254,7 +254,7 @@ class _GroupDetailsScreenState extends State<GroupDetailsScreen> {
               },
             ),
           ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
           floatingActionButton: FloatingActionButton(
             onPressed: () async {
               if (context.mounted) {

@@ -1,3 +1,4 @@
+import 'package:finance_flow/app/app.dart';
 import 'package:finance_flow/app/design_system/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 
@@ -19,9 +20,9 @@ class DashboardDrawer extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(AppSpacing.s, AppSpacing.s, AppSpacing.s, 0),
           child: Column(
             spacing: AppSpacing.s,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // const AppLogo(size: AppSpacing.xm),
+              const AppLogo(size: 50),
               Row(
                 spacing: AppSpacing.s,
                 children: [

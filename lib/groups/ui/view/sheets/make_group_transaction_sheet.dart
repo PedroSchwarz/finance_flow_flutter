@@ -2,6 +2,7 @@ import 'package:finance_flow/app/app.dart';
 import 'package:finance_flow/transactions/transactions.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 
 class MakeGroupTransactionSheet extends StatefulWidget {
   const MakeGroupTransactionSheet({
@@ -109,6 +110,7 @@ class _MakeGroupTransactionSheetState extends State<MakeGroupTransactionSheet> w
                   ),
                   const Gap(AppSpacing.s),
                   FilledButton(onPressed: widget.depositAmount > 0 && widget.canSubmit ? widget.onSubmit : null, child: const Text('Submit')),
+                  FilledButton.tonal(onPressed: context.pop, child: const Text('Close')),
                 ],
               ),
             ),

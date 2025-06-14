@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 
 class AppTheme {
   static const Color primaryPurple = Color(0xFF6750A4);
-  static const Color primaryPurpleLight = Color.fromARGB(255, 204, 189, 244);
-  static const Color secondaryColor = Color(0xFF625B71);
+  static const Color primaryPurpleLight = Color(0xFFCCBDF4);
 
   static const Color lightBackgroundColor = Color(0xFFFDFDFD);
   static const Color lightInputBackgroundColor = Color.fromARGB(255, 225, 225, 225);

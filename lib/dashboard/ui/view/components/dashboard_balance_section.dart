@@ -14,9 +14,10 @@ class DashboardBalanceSection extends StatelessWidget {
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.center,
       spacing: AppSpacing.s,
       children: [
-        Flexible(
+        Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -28,7 +29,13 @@ class DashboardBalanceSection extends StatelessWidget {
             ],
           ),
         ),
-        IconButton.filled(tooltip: 'Add Transactions', onPressed: onTap, padding: const EdgeInsets.all(AppSpacing.s), icon: const Icon(Icons.repeat)),
+        IconButton.filledTonal(
+          tooltip: 'Add Transactions',
+          onPressed: onTap,
+          padding: const EdgeInsets.all(AppSpacing.s),
+          icon: const Icon(Icons.repeat),
+          color: Colors.green,
+        ),
       ],
     );
   }

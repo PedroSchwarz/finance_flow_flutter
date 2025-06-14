@@ -1,3 +1,4 @@
+import 'package:finance_flow/app/app.dart';
 import 'package:finance_flow/app/dependencies/locators.dart';
 import 'package:finance_flow/app/design_system/components/app_text_field.dart';
 import 'package:finance_flow/app/design_system/theme/app_spacing.dart';
@@ -63,7 +64,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           const Gap(AppSpacing.s),
-                          Column(spacing: AppSpacing.s, children: [Text('Finance Flow', style: Theme.of(context).textTheme.headlineLarge)]),
+                          Column(
+                            spacing: AppSpacing.s,
+                            children: [const AppLogo(size: 80), Text('Finance Flow', style: Theme.of(context).textTheme.headlineLarge)],
+                          ),
                           Column(
                             spacing: AppSpacing.s,
                             crossAxisAlignment: CrossAxisAlignment.stretch,

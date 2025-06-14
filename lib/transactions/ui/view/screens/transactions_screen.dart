@@ -59,7 +59,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                         builder: (context, listType) {
                           return DropdownButton<TransactionsListType>(
                             value: listType,
-                            icon: const Padding(padding: EdgeInsets.only(left: AppSpacing.s), child: Icon(Icons.list, color: Colors.orange)),
+                            icon: const Padding(padding: EdgeInsets.only(left: AppSpacing.s), child: Icon(Icons.list)),
                             items:
                                 TransactionsListType.values.map((type) {
                                   return DropdownMenuItem(
@@ -67,10 +67,12 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                                     child: Text(switch (type) {
                                       TransactionsListType.list => 'List',
                                       TransactionsListType.calendar => 'Calendar',
-                                    }),
+                                    }, style: const TextStyle().copyWith(color: type == listType ? theme.colorScheme.primary : null)),
                                   );
                                 }).toList(),
                             onChanged: (value) => bloc.updateListType(value!),
+                            borderRadius: BorderRadius.circular(AppSpacing.s),
+                            dropdownColor: theme.colorScheme.surfaceContainer,
                           );
                         },
                       ),
@@ -80,7 +82,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                         builder: (context, typeFilter) {
                           return DropdownButton<TransactionsTypeFilter>(
                             value: typeFilter,
-                            icon: const Padding(padding: EdgeInsets.only(left: AppSpacing.s), child: Icon(Icons.repeat, color: Colors.green)),
+                            icon: const Padding(padding: EdgeInsets.only(left: AppSpacing.s), child: Icon(Icons.repeat)),
                             items:
                                 TransactionsTypeFilter.values.map((filter) {
                                   return DropdownMenuItem(
@@ -89,10 +91,12 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                                       TransactionsTypeFilter.all => 'All',
                                       TransactionsTypeFilter.incomes => 'Incomes',
                                       TransactionsTypeFilter.expenses => 'Expenses',
-                                    }),
+                                    }, style: const TextStyle().copyWith(color: filter == typeFilter ? theme.colorScheme.primary : null)),
                                   );
                                 }).toList(),
                             onChanged: (value) => bloc.updateTransactionsTypeFilter(value!),
+                            borderRadius: BorderRadius.circular(AppSpacing.s),
+                            dropdownColor: theme.colorScheme.surfaceContainer,
                           );
                         },
                       ),
@@ -102,7 +106,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                         builder: (context, dateSort) {
                           return DropdownButton<TransactionsDateSort>(
                             value: dateSort,
-                            icon: const Padding(padding: EdgeInsets.only(left: AppSpacing.s), child: Icon(Icons.sort, color: Colors.blue)),
+                            icon: const Padding(padding: EdgeInsets.only(left: AppSpacing.s), child: Icon(Icons.sort)),
                             items:
                                 TransactionsDateSort.values.map((sort) {
                                   return DropdownMenuItem(
@@ -110,10 +114,12 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                                     child: Text(switch (sort) {
                                       TransactionsDateSort.newest => 'Newest',
                                       TransactionsDateSort.oldest => 'Oldest',
-                                    }),
+                                    }, style: const TextStyle().copyWith(color: sort == dateSort ? theme.colorScheme.primary : null)),
                                   );
                                 }).toList(),
                             onChanged: (value) => bloc.updateDateSort(value!),
+                            borderRadius: BorderRadius.circular(AppSpacing.s),
+                            dropdownColor: theme.colorScheme.surfaceContainer,
                           );
                         },
                       ),
@@ -173,7 +179,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
             },
           ),
         ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
             if (context.mounted) {

@@ -35,7 +35,12 @@ class GroupItem extends StatelessWidget {
                     children: [
                       Text(group.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: theme.textTheme.titleLarge),
                       const Gap(AppSpacing.xs),
-                      Text(group.description, maxLines: 3, overflow: TextOverflow.ellipsis, style: theme.textTheme.bodyLarge),
+                      Text(
+                        group.description.isEmpty ? 'No description.' : group.description,
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.bodyLarge,
+                      ),
                       const Gap(AppSpacing.s),
                       Text(
                         CurrencyInputFormatter.getFormatted(group.balance),

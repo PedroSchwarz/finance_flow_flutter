@@ -31,8 +31,8 @@ class GroupTransactionsList extends StatelessWidget {
               Text('Movements', style: theme.textTheme.titleLarge),
               DropdownButton<GroupTransactionDateSort>(
                 icon: const Padding(padding: EdgeInsets.only(left: AppSpacing.s), child: Icon(Icons.sort)),
-                isDense: true,
                 value: dateSort,
+                isDense: true,
                 items:
                     GroupTransactionDateSort.values.map((sort) {
                       return DropdownMenuItem(
@@ -40,10 +40,12 @@ class GroupTransactionsList extends StatelessWidget {
                         child: Text(switch (sort) {
                           GroupTransactionDateSort.newest => 'Newest',
                           GroupTransactionDateSort.oldest => 'Oldest',
-                        }),
+                        }, style: TextStyle().copyWith(color: sort == dateSort ? theme.colorScheme.primary : null)),
                       );
                     }).toList(),
                 onChanged: onDateSortChanged,
+                borderRadius: BorderRadius.circular(AppSpacing.s),
+                dropdownColor: theme.colorScheme.surfaceContainer,
               ),
             ],
           ),

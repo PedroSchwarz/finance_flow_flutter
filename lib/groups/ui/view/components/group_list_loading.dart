@@ -8,7 +8,7 @@ class GroupListLoading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
-      padding: const EdgeInsets.all(AppSpacing.s),
+      padding: const EdgeInsets.only(top: AppSpacing.s, left: AppSpacing.s, right: AppSpacing.s, bottom: AppSpacing.max),
       itemCount: 5,
       itemBuilder: (_, __) {
         return const AppSkeleton(isLoading: true, child: SizedBox(height: 150, width: double.infinity));

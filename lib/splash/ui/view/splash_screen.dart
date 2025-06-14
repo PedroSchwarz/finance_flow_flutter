@@ -1,4 +1,5 @@
 import 'package:finance_flow/app/dependencies/locators.dart';
+import 'package:finance_flow/app/design_system/components/app_logo.dart';
 import 'package:finance_flow/auth/ui/view/login_screen.dart';
 import 'package:finance_flow/dashboard/dashboard.dart';
 import 'package:finance_flow/splash/ui/cubit/splash_cubit.dart';
@@ -41,7 +42,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     return BlocListener<SplashCubit, SplashState>(
       bloc: bloc,
       listener: _listenNavigationFlow,
-      child: Scaffold(body: Center(child: ScaleTransition(scale: _animation, child: const FlutterLogo(size: 100)))),
+      child: Scaffold(body: Center(child: ScaleTransition(scale: _animation, child: const AppLogo(size: 100)))),
     );
   }
 
