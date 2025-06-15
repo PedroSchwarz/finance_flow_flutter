@@ -1,10 +1,12 @@
 export './configurations/data/models/build_configurations.dart';
 export './dependencies/locators.dart';
+export './design_system/components/animated_background.dart';
 export './design_system/components/animated_progress_indicator.dart';
 export './design_system/components/app_logo.dart';
 export './design_system/components/app_skeleton.dart';
 export './design_system/components/app_sliver_header_wrapper.dart';
 export './design_system/components/app_text_field.dart';
+export './design_system/components/liquid_glass.dart';
 export './design_system/theme/app_spacing.dart';
 export './design_system/theme/app_theme.dart';
 export './extensions/build_context_extensions.dart';
