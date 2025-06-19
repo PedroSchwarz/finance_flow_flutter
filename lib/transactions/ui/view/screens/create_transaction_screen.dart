@@ -34,140 +34,149 @@ class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
           }
         },
         child: Scaffold(
-          body: SafeArea(
-            top: false,
-            child: CustomScrollView(
-              slivers: [
-                SliverAppBar.medium(
-                  title: const Text('Create Transaction'),
-                  bottom: PreferredSize(
-                    preferredSize: const Size(0, AppSpacing.s),
-                    child: BlocSelector<CreateTransactionCubit, CreateTransactionState, bool>(
+          body: Stack(
+            children: [
+              const AnimatedBackground(),
+              SafeArea(
+                top: false,
+                child: CustomScrollView(
+                  slivers: [
+                    BlocSelector<CreateTransactionCubit, CreateTransactionState, bool>(
                       bloc: bloc,
                       selector: (state) => state.isLoading || state.isSubmitting,
-                      builder: (context, isLoading) => isLoading ? const LinearProgressIndicator() : const SizedBox.shrink(),
+                      builder: (context, isLoading) {
+                        return AppSliverAppBar(title: 'Create Transaction', isLoading: isLoading);
+                      },
                     ),
-                  ),
-                ),
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.all(AppSpacing.s),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      spacing: AppSpacing.s,
-                      children: [
-                        BlocSelector<CreateTransactionCubit, CreateTransactionState, TransactionType>(
-                          bloc: bloc,
-                          selector: (state) => state.type,
-                          builder: (context, type) {
-                            return SegmentedButton(
-                              segments:
-                                  TransactionType.values.map((item) {
-                                    return ButtonSegment(
-                                      value: item,
-                                      label: Text(switch (item) {
-                                        TransactionType.income => 'Income',
-                                        TransactionType.expense => 'Expense',
-                                      }),
-                                    );
-                                  }).toList(),
-                              selected: {type},
-                              onSelectionChanged: (values) {
-                                bloc.updateType(values.first);
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.all(AppSpacing.s),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          spacing: AppSpacing.s,
+                          children: [
+                            BlocSelector<CreateTransactionCubit, CreateTransactionState, TransactionType>(
+                              bloc: bloc,
+                              selector: (state) => state.type,
+                              builder: (context, type) {
+                                return SegmentedButton(
+                                  segments:
+                                      TransactionType.values.map((item) {
+                                        return ButtonSegment(
+                                          value: item,
+                                          label: Text(switch (item) {
+                                            TransactionType.income => 'Income',
+                                            TransactionType.expense => 'Expense',
+                                          }),
+                                        );
+                                      }).toList(),
+                                  selected: {type},
+                                  onSelectionChanged: (values) {
+                                    bloc.updateType(values.first);
+                                  },
+                                );
                               },
-                            );
-                          },
+                            ),
+                            BlocBuilder<CreateTransactionCubit, CreateTransactionState>(
+                              bloc: bloc,
+                              buildWhen:
+                                  (previous, current) =>
+                                      previous.title != current.title || //
+                                      previous.isLoading != current.isLoading,
+                              builder: (context, state) {
+                                return AppSkeleton(
+                                  isLoading: state.isLoading,
+                                  child: LiquidGlassCard(
+                                    borderRadius: BorderRadius.circular(AppSpacing.xs),
+                                    isTransparent: true,
+                                    child: AppTextField(
+                                      label: 'Title',
+                                      initialValue: state.title,
+                                      onChanged: bloc.updateTitle,
+                                      textCapitalization: TextCapitalization.words,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                            BlocBuilder<CreateTransactionCubit, CreateTransactionState>(
+                              bloc: bloc,
+                              buildWhen:
+                                  (previous, current) =>
+                                      previous.description != current.description || //
+                                      previous.isLoading != current.isLoading,
+                              builder: (context, state) {
+                                return AppSkeleton(
+                                  isLoading: state.isLoading,
+                                  child: LiquidGlassCard(
+                                    borderRadius: BorderRadius.circular(AppSpacing.xs),
+                                    isTransparent: true,
+                                    child: AppTextField(
+                                      label: 'Description',
+                                      maxLines: 5,
+                                      initialValue: state.description,
+                                      onChanged: bloc.updateDescription,
+                                      textCapitalization: TextCapitalization.sentences,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                            const Gap(AppSpacing.s),
+                            BlocBuilder<CreateTransactionCubit, CreateTransactionState>(
+                              bloc: bloc,
+                              buildWhen:
+                                  (previous, current) =>
+                                      previous.description != current.description || //
+                                      previous.isLoading != current.isLoading,
+                              builder: (context, state) {
+                                return AppSkeleton(
+                                  isLoading: state.isLoading,
+                                  child: AppTextField(
+                                    label: 'Amount',
+                                    currencyValue: state.amount,
+                                    onChanged: (value) {
+                                      bloc.updateAmount(CurrencyInputFormatter.parseFormatted(value));
+                                    },
+                                    labelStyle: theme.textTheme.titleLarge?.copyWith(color: theme.colorScheme.secondary),
+                                    textStyle: theme.textTheme.displayMedium,
+                                    fillColor: Colors.transparent,
+                                    border: UnderlineInputBorder(borderSide: BorderSide(color: theme.colorScheme.primary)),
+                                    inputFormatters: [CurrencyInputFormatter()],
+                                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
                         ),
-                        BlocBuilder<CreateTransactionCubit, CreateTransactionState>(
-                          bloc: bloc,
-                          buildWhen:
-                              (previous, current) =>
-                                  previous.title != current.title || //
-                                  previous.isLoading != current.isLoading,
-                          builder: (context, state) {
-                            return AppSkeleton(
-                              isLoading: state.isLoading,
-                              child: AppTextField(
-                                label: 'Title',
-                                initialValue: state.title,
-                                onChanged: bloc.updateTitle,
-                                textCapitalization: TextCapitalization.words,
-                              ),
-                            );
-                          },
-                        ),
-                        BlocBuilder<CreateTransactionCubit, CreateTransactionState>(
-                          bloc: bloc,
-                          buildWhen:
-                              (previous, current) =>
-                                  previous.description != current.description || //
-                                  previous.isLoading != current.isLoading,
-                          builder: (context, state) {
-                            return AppSkeleton(
-                              isLoading: state.isLoading,
-                              child: AppTextField(
-                                label: 'Description',
-                                maxLines: 5,
-                                initialValue: state.description,
-                                onChanged: bloc.updateDescription,
-                                textCapitalization: TextCapitalization.sentences,
-                              ),
-                            );
-                          },
-                        ),
-                        const Gap(AppSpacing.s),
-                        BlocBuilder<CreateTransactionCubit, CreateTransactionState>(
-                          bloc: bloc,
-                          buildWhen:
-                              (previous, current) =>
-                                  previous.description != current.description || //
-                                  previous.isLoading != current.isLoading,
-                          builder: (context, state) {
-                            return AppSkeleton(
-                              isLoading: state.isLoading,
-                              child: AppTextField(
-                                label: 'Amount',
-                                currencyValue: state.amount,
-                                onChanged: (value) {
-                                  bloc.updateAmount(CurrencyInputFormatter.parseFormatted(value));
+                      ),
+                    ),
+                    SliverFillRemaining(
+                      hasScrollBody: false,
+                      fillOverscroll: false,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Expanded(
+                              child: BlocSelector<CreateTransactionCubit, CreateTransactionState, bool>(
+                                bloc: bloc,
+                                selector: (state) => state.canSubmit,
+                                builder: (context, canSubmit) {
+                                  return FilledButton(onPressed: canSubmit ? bloc.createTransaction : null, child: const Text('Create'));
                                 },
-                                labelStyle: theme.textTheme.titleLarge?.copyWith(color: theme.colorScheme.secondary),
-                                textStyle: theme.textTheme.displayMedium,
-                                fillColor: Colors.transparent,
-                                border: UnderlineInputBorder(borderSide: BorderSide(color: theme.colorScheme.primary)),
-                                inputFormatters: [CurrencyInputFormatter()],
-                                keyboardType: const TextInputType.numberWithOptions(decimal: true),
                               ),
-                            );
-                          },
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-                SliverFillRemaining(
-                  hasScrollBody: false,
-                  fillOverscroll: false,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Expanded(
-                          child: BlocSelector<CreateTransactionCubit, CreateTransactionState, bool>(
-                            bloc: bloc,
-                            selector: (state) => state.canSubmit,
-                            builder: (context, canSubmit) {
-                              return FilledButton(onPressed: canSubmit ? bloc.createTransaction : null, child: const Text('Create'));
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

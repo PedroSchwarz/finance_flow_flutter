@@ -35,113 +35,120 @@ class _DashboardScreenState extends State<DashboardScreen> {
         subtitle: bloc.currentUser.email,
         onSignOut: bloc.signOut,
       ),
-      body: NestedScrollView(
-        headerSliverBuilder:
-            (_, __) => [
-              SliverAppBar.medium(
-                title: const Text('Dashboard'),
-                actions: [
-                  BlocSelector<DashboardCubit, DashboardState, List<InviteResponse>>(
+      body: Stack(
+        children: [
+          const AnimatedBackground(hasAnimatedShapes: true),
+          NestedScrollView(
+            headerSliverBuilder:
+                (_, __) => [
+                  BlocSelector<DashboardCubit, DashboardState, bool>(
                     bloc: bloc,
-                    selector: (state) => state.invites,
-                    builder: (context, invites) {
-                      return DashboardInvitesButton(
-                        count: invites.length,
-                        onPressed: () async {
-                          if (context.mounted) {
-                            final _ = await context.pushNamed(InvitesScreen.routeName);
-                            bloc.refresh();
-                          }
-                        },
+                    selector: (state) => state.isLoading || state.isRefreshing,
+                    builder:
+                        (context, isLoading) => AppSliverAppBar(
+                          title: 'Dashboard',
+                          isLoading: isLoading,
+                          actions: [
+                            BlocSelector<DashboardCubit, DashboardState, List<InviteResponse>>(
+                              bloc: bloc,
+                              selector: (state) => state.invites,
+                              builder: (context, invites) {
+                                return DashboardInvitesButton(
+                                  count: invites.length,
+                                  onPressed: () async {
+                                    if (context.mounted) {
+                                      final _ = await context.pushNamed(InvitesScreen.routeName);
+                                      bloc.refresh();
+                                    }
+                                  },
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                  ),
+                  BlocBuilder<DashboardCubit, DashboardState>(
+                    bloc: bloc,
+                    buildWhen: (previous, current) => previous.balance != current.balance,
+                    builder: (context, state) {
+                      return SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.all(AppSpacing.s),
+                          child: DashboardBalanceSection(
+                            balance: state.balance,
+                            onTap: () async {
+                              if (context.mounted) {
+                                final _ = await context.pushNamed(TransactionsScreen.routeName);
+                                await bloc.refresh();
+                              }
+                            },
+                          ),
+                        ),
                       );
                     },
                   ),
                 ],
-                bottom: PreferredSize(
-                  preferredSize: const Size(0, AppSpacing.s),
-                  child: BlocSelector<DashboardCubit, DashboardState, bool>(
-                    bloc: bloc,
-                    selector: (state) => state.isLoading || state.isRefreshing,
-                    builder: (context, isLoading) => isLoading ? const LinearProgressIndicator() : const SizedBox.shrink(),
-                  ),
-                ),
-              ),
-              BlocBuilder<DashboardCubit, DashboardState>(
-                bloc: bloc,
-                buildWhen: (previous, current) => previous.balance != current.balance,
-                builder: (context, state) {
-                  return SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.all(AppSpacing.s),
-                      child: DashboardBalanceSection(
-                        balance: state.balance,
-                        onTap: () async {
-                          if (context.mounted) {
-                            final _ = await context.pushNamed(TransactionsScreen.routeName);
-                            await bloc.refresh();
-                          }
-                        },
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ],
-        body: BlocBuilder<DashboardCubit, DashboardState>(
-          bloc: bloc,
-          buildWhen:
-              (previous, current) =>
-                  previous.isLoading != current.isLoading || //
-                  previous.groups != current.groups,
-          builder: (context, state) {
-            if (state.isLoading) {
-              return const GroupListLoading();
-            }
-
-            if (state.groups.isEmpty) {
-              return GroupContentUnavailable(onRefresh: bloc.refresh);
-            }
-
-            return GroupsList(
-              groups: state.groups,
-              currentUser: bloc.currentUser,
-              onSelected: (group) async {
-                if (context.mounted) {
-                  final _ = await context.pushNamed(
-                    GroupDetailsScreen.routeName,
-                    pathParameters: {'id': group.id},
-                    queryParameters: {'name': group.name},
-                  );
-                  bloc.refresh();
+            body: BlocBuilder<DashboardCubit, DashboardState>(
+              bloc: bloc,
+              buildWhen:
+                  (previous, current) =>
+                      previous.isLoading != current.isLoading || //
+                      previous.groups != current.groups,
+              builder: (context, state) {
+                if (state.isLoading) {
+                  return const GroupListLoading();
                 }
-              },
-              onEdit: (group) async {
-                if (context.mounted) {
-                  final result = await context.pushNamed<bool>(CreateGroupScreen.routeName, queryParameters: {'id': group.id});
 
-                  if (result ?? false) {
-                    bloc.refresh();
-                  }
+                if (state.groups.isEmpty) {
+                  return GroupContentUnavailable(onRefresh: bloc.refresh);
                 }
+
+                return GroupsList(
+                  groups: state.groups,
+                  currentUser: bloc.currentUser,
+                  onSelected: (group) async {
+                    if (context.mounted) {
+                      final _ = await context.pushNamed(
+                        GroupDetailsScreen.routeName,
+                        pathParameters: {'id': group.id},
+                        queryParameters: {'name': group.name},
+                      );
+                      bloc.refresh();
+                    }
+                  },
+                  onEdit: (group) async {
+                    if (context.mounted) {
+                      final result = await context.pushNamed<bool>(CreateGroupScreen.routeName, queryParameters: {'id': group.id});
+
+                      if (result ?? false) {
+                        bloc.refresh();
+                      }
+                    }
+                  },
+                  onRefresh: bloc.refresh,
+                );
               },
-              onRefresh: bloc.refresh,
-            );
-          },
-        ),
+            ),
+          ),
+        ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton.extended(
-        label: const Text('Create Group'),
-        icon: const Icon(Icons.add),
-        onPressed: () async {
-          if (context.mounted) {
-            final result = await context.pushNamed<bool>(CreateGroupScreen.routeName);
+      floatingActionButton: LiquidGlassCard(
+        child: FloatingActionButton.extended(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          label: const Text('Create Group'),
+          icon: const Icon(Icons.add),
+          onPressed: () async {
+            if (context.mounted) {
+              final result = await context.pushNamed<bool>(CreateGroupScreen.routeName);
 
-            if (result ?? false) {
-              bloc.refresh();
+              if (result ?? false) {
+                bloc.refresh();
+              }
             }
-          }
-        },
+          },
+        ),
       ),
     );
   }

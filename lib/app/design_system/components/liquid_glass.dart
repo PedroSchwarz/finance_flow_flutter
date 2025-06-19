@@ -4,9 +4,10 @@ import 'package:finance_flow/app/app.dart';
 import 'package:flutter/material.dart';
 
 class LiquidGlassCard extends StatelessWidget {
-  const LiquidGlassCard({required this.child, this.padding, this.margin, this.borderRadius, super.key});
+  const LiquidGlassCard({required this.child, this.isTransparent = false, this.padding, this.margin, this.borderRadius, super.key});
 
   final Widget child;
+  final bool isTransparent;
   final EdgeInsets? padding;
   final EdgeInsets? margin;
   final BorderRadius? borderRadius;
@@ -26,9 +27,9 @@ class LiquidGlassCard extends StatelessWidget {
         borderRadius: borderRadius ?? BorderRadius.circular(AppSpacing.s),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-          child: Container(
+          child: DecoratedBox(
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 1.5),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.2), width: 1.5),
               borderRadius: borderRadius ?? BorderRadius.circular(AppSpacing.s),
             ),
             child: Stack(
@@ -40,12 +41,16 @@ class LiquidGlassCard extends StatelessWidget {
                   height: 60,
                   child: Container(
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [Colors.white.withValues(alpha: 0.1), Colors.white.withValues(alpha: 0.0)],
-                      ),
-                      borderRadius: const BorderRadius.only(topLeft: Radius.circular(AppSpacing.s), topRight: Radius.circular(AppSpacing.s)),
+                      gradient:
+                          isTransparent
+                              ? null
+                              : LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [Colors.white.withValues(alpha: 0.4), Colors.white.withValues(alpha: 0.0)],
+                              ),
+                      borderRadius:
+                          borderRadius ?? const BorderRadius.only(topLeft: Radius.circular(AppSpacing.s), topRight: Radius.circular(AppSpacing.s)),
                     ),
                   ),
                 ),
@@ -63,7 +68,7 @@ class LiquidGlassButton extends StatefulWidget {
   const LiquidGlassButton({super.key, required this.text, required this.onTap, this.isSecondary = false});
 
   final String text;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   final bool isSecondary;
 
   @override

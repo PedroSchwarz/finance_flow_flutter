@@ -14,30 +14,31 @@ class TransactionItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Dismissible(
-      key: ValueKey(transaction.title),
-      direction: DismissDirection.startToEnd,
-      dismissThresholds: const {DismissDirection.startToEnd: 0.6},
-      background: Container(
-        padding: const EdgeInsets.all(AppSpacing.m),
-        alignment: Alignment.centerLeft,
-        decoration: const BoxDecoration(color: Colors.red),
-        child: Column(
-          spacing: AppSpacing.xxxs,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.delete_outline, color: Colors.white, size: 32),
-            Text('Delete', style: theme.textTheme.titleMedium?.copyWith(color: Colors.white)),
-          ],
+    return LiquidGlassCard(
+      margin: const EdgeInsets.symmetric(horizontal: AppSpacing.s),
+      borderRadius: BorderRadius.circular(AppSpacing.xs),
+      child: Dismissible(
+        key: ValueKey(transaction.title),
+        direction: DismissDirection.startToEnd,
+        dismissThresholds: const {DismissDirection.startToEnd: 0.6},
+        background: Container(
+          padding: const EdgeInsets.all(AppSpacing.m),
+          alignment: Alignment.centerLeft,
+          decoration: const BoxDecoration(color: Colors.red),
+          child: Column(
+            spacing: AppSpacing.xxxs,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.delete_outline, color: Colors.white, size: 32),
+              Text('Delete', style: theme.textTheme.titleMedium?.copyWith(color: Colors.white)),
+            ],
+          ),
         ),
-      ),
-      confirmDismiss: (direction) async {
-        HapticFeedback.heavyImpact();
-        await onDelete();
-        return false;
-      },
-      child: InkWell(
-        onTap: () {},
+        confirmDismiss: (direction) async {
+          HapticFeedback.heavyImpact();
+          await onDelete();
+          return false;
+        },
         child: Container(
           decoration: BoxDecoration(
             border: Border(

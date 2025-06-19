@@ -50,174 +50,191 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
               }
             },
             child: Scaffold(
-              body: SafeArea(
-                top: false,
-                child: CustomScrollView(
-                  slivers: [
-                    SliverAppBar.medium(
-                      title: BlocBuilder<CreateGroupCubit, CreateGroupState>(
-                        bloc: bloc,
-                        buildWhen: (previous, current) => previous.isLoading != current.isLoading || previous.isUpdating != current.isUpdating,
-                        builder: (context, state) {
-                          return AppSkeleton(isLoading: state.isLoading, child: Text(state.isUpdating ? 'Update Group' : 'Create Group'));
-                        },
-                      ),
-                      bottom: PreferredSize(
-                        preferredSize: const Size(0, AppSpacing.s),
-                        child: BlocSelector<CreateGroupCubit, CreateGroupState, bool>(
-                          bloc: bloc,
-                          selector: (state) => state.isSubmitting || state.isLoading,
-                          builder: (context, isLoading) => isLoading ? const LinearProgressIndicator() : const SizedBox.shrink(),
-                        ),
-                      ),
-                    ),
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(AppSpacing.s, AppSpacing.s, AppSpacing.s, 0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          spacing: AppSpacing.s,
-                          children: [
-                            BlocBuilder<CreateGroupCubit, CreateGroupState>(
-                              bloc: bloc,
-                              buildWhen:
-                                  (previous, current) =>
-                                      previous.isLoading != current.isLoading || //
-                                      previous.name != current.name,
-                              builder: (context, state) {
-                                return AppSkeleton(
-                                  isLoading: state.isLoading,
-                                  child: AppTextField(
-                                    label: 'Name',
-                                    initialValue: state.name,
-                                    onChanged: bloc.updateName,
-                                    textCapitalization: TextCapitalization.words,
-                                  ),
-                                );
-                              },
-                            ),
-                            BlocBuilder<CreateGroupCubit, CreateGroupState>(
-                              bloc: bloc,
-                              buildWhen:
-                                  (previous, current) =>
-                                      previous.isLoading != current.isLoading || //
-                                      previous.description != current.description,
-                              builder: (context, state) {
-                                return AppSkeleton(
-                                  isLoading: state.isLoading,
-                                  child: AppTextField(
-                                    label: 'Description',
-                                    initialValue: state.description,
-                                    onChanged: bloc.updateDescription,
-                                    textCapitalization: TextCapitalization.sentences,
-                                    maxLines: 5,
-                                  ),
-                                );
-                              },
-                            ),
-                            BlocBuilder<CreateGroupCubit, CreateGroupState>(
-                              bloc: bloc,
-                              buildWhen:
-                                  (previous, current) =>
-                                      previous.users != current.users || //
-                                      previous.isUpdating != current.isUpdating || //
-                                      previous.selectedUsersIds != current.selectedUsersIds,
-                              builder: (context, state) {
-                                if (state.users.isEmpty) {
-                                  return const SizedBox.shrink();
-                                }
-
-                                return Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    TextButton(
-                                      onPressed: bloc.toggleInviteUsersSheet,
-                                      child: Row(
-                                        spacing: AppSpacing.xs,
-                                        children: [
-                                          const Icon(Icons.person_add_outlined),
-                                          Text(state.isUpdating ? 'Manage members' : 'Invite members'),
-                                        ],
-                                      ),
-                                    ),
-                                    Text('Selected members: ${state.selectedUsersIds.length}'),
-                                  ],
-                                );
-                              },
-                            ),
-                            if (widget.id == null)
-                              BlocBuilder<CreateGroupCubit, CreateGroupState>(
-                                bloc: bloc,
-                                buildWhen:
-                                    (previous, current) =>
-                                        previous.isLoading != current.isLoading || //
-                                        previous.amount != current.amount || //
-                                        previous.maxBalance != current.maxBalance,
-                                builder: (context, state) {
-                                  return AppSkeleton(
-                                    isLoading: state.isLoading,
-                                    child: AppTextField(
-                                      label: 'Initial Deposit',
-                                      currencyValue: state.amount,
-                                      onChanged: (value) {
-                                        bloc.updateAmount(CurrencyInputFormatter.parseFormatted(value));
-                                      },
-                                      labelStyle: theme.textTheme.titleLarge?.copyWith(color: theme.colorScheme.secondary),
-                                      textStyle: theme.textTheme.displayMedium,
-                                      helper: 'Available balance: ${CurrencyInputFormatter.getFormatted(state.maxBalance)}',
-                                      fillColor: Colors.transparent,
-                                      error: state.isAmountValid ? null : 'Invalid amount',
-                                      border: UnderlineInputBorder(borderSide: BorderSide(color: theme.colorScheme.primary)),
-                                      inputFormatters: [CurrencyInputFormatter()],
-                                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                                    ),
-                                  );
-                                },
-                              ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    SliverFillRemaining(
-                      hasScrollBody: false,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s),
-                        child: BlocBuilder<CreateGroupCubit, CreateGroupState>(
+              body: Stack(
+                children: [
+                  const AnimatedBackground(),
+                  SafeArea(
+                    top: false,
+                    child: CustomScrollView(
+                      slivers: [
+                        BlocBuilder<CreateGroupCubit, CreateGroupState>(
                           bloc: bloc,
                           buildWhen:
                               (previous, current) =>
                                   previous.isLoading != current.isLoading || //
-                                  previous.canSubmit != current.canSubmit || //
+                                  previous.isSubmitting != current.isSubmitting || //
                                   previous.isUpdating != current.isUpdating,
                           builder: (context, state) {
-                            return Row(
-                              spacing: AppSpacing.s,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Expanded(
-                                  child: FilledButton(
-                                    onPressed: state.canSubmit ? bloc.saveGroup : null,
-                                    child: Text(state.isUpdating ? 'Update' : 'Create'),
-                                  ),
-                                ),
-                                if (state.isUpdating)
-                                  Expanded(
-                                    child: FilledButton.tonal(
-                                      onPressed: () {
-                                        HapticFeedback.heavyImpact();
-                                        bloc.toggleDeleteDialog();
-                                      },
-                                      child: const Text('Delete'),
-                                    ),
-                                  ),
-                              ],
+                            return AppSliverAppBar(
+                              title: state.isUpdating ? 'Update Group' : 'Create Group',
+                              isLoading: state.isSubmitting || state.isLoading,
                             );
                           },
                         ),
-                      ),
+                        SliverToBoxAdapter(
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(AppSpacing.s, AppSpacing.s, AppSpacing.s, 0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              spacing: AppSpacing.s,
+                              children: [
+                                BlocBuilder<CreateGroupCubit, CreateGroupState>(
+                                  bloc: bloc,
+                                  buildWhen:
+                                      (previous, current) =>
+                                          previous.isLoading != current.isLoading || //
+                                          previous.name != current.name,
+                                  builder: (context, state) {
+                                    return AppSkeleton(
+                                      isLoading: state.isLoading,
+                                      child: LiquidGlassCard(
+                                        borderRadius: BorderRadius.circular(AppSpacing.xs),
+                                        isTransparent: true,
+                                        child: AppTextField(
+                                          label: 'Name',
+                                          initialValue: state.name,
+                                          onChanged: bloc.updateName,
+                                          textCapitalization: TextCapitalization.words,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                                BlocBuilder<CreateGroupCubit, CreateGroupState>(
+                                  bloc: bloc,
+                                  buildWhen:
+                                      (previous, current) =>
+                                          previous.isLoading != current.isLoading || //
+                                          previous.description != current.description,
+                                  builder: (context, state) {
+                                    return AppSkeleton(
+                                      isLoading: state.isLoading,
+                                      child: LiquidGlassCard(
+                                        borderRadius: BorderRadius.circular(AppSpacing.xs),
+                                        isTransparent: true,
+                                        child: AppTextField(
+                                          label: 'Description',
+                                          initialValue: state.description,
+                                          onChanged: bloc.updateDescription,
+                                          textCapitalization: TextCapitalization.sentences,
+                                          maxLines: 5,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                                BlocBuilder<CreateGroupCubit, CreateGroupState>(
+                                  bloc: bloc,
+                                  buildWhen:
+                                      (previous, current) =>
+                                          previous.users != current.users || //
+                                          previous.isUpdating != current.isUpdating || //
+                                          previous.selectedUsersIds != current.selectedUsersIds,
+                                  builder: (context, state) {
+                                    if (state.users.isEmpty) {
+                                      return const SizedBox.shrink();
+                                    }
+
+                                    return Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        TextButton(
+                                          onPressed: bloc.toggleInviteUsersSheet,
+                                          child: Row(
+                                            spacing: AppSpacing.xs,
+                                            children: [
+                                              const Icon(Icons.person_add_outlined),
+                                              Text(state.isUpdating ? 'Manage members' : 'Invite members'),
+                                            ],
+                                          ),
+                                        ),
+                                        Text('Selected members: ${state.selectedUsersIds.length}'),
+                                      ],
+                                    );
+                                  },
+                                ),
+                                if (widget.id == null)
+                                  BlocBuilder<CreateGroupCubit, CreateGroupState>(
+                                    bloc: bloc,
+                                    buildWhen:
+                                        (previous, current) =>
+                                            previous.isLoading != current.isLoading || //
+                                            previous.amount != current.amount || //
+                                            previous.maxBalance != current.maxBalance,
+                                    builder: (context, state) {
+                                      return
+                                      // LiquidGlassCard(
+                                      //   padding: const EdgeInsets.all(AppSpacing.xs),
+                                      //   borderRadius: BorderRadius.circular(AppSpacing.xs),
+                                      //   isTransparent: true,
+                                      //   child:
+                                      AppSkeleton(
+                                        isLoading: state.isLoading,
+                                        child: AppTextField(
+                                          label: 'Initial Deposit',
+                                          currencyValue: state.amount,
+                                          onChanged: (value) {
+                                            bloc.updateAmount(CurrencyInputFormatter.parseFormatted(value));
+                                          },
+                                          labelStyle: theme.textTheme.titleLarge?.copyWith(color: theme.colorScheme.secondary),
+                                          textStyle: theme.textTheme.displayMedium,
+                                          helper: 'Available balance: ${CurrencyInputFormatter.getFormatted(state.maxBalance)}',
+                                          fillColor: Colors.transparent,
+                                          error: state.isAmountValid ? null : 'Invalid amount',
+                                          border: UnderlineInputBorder(borderSide: BorderSide(color: theme.colorScheme.primary)),
+                                          inputFormatters: [CurrencyInputFormatter()],
+                                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                        ),
+                                        // ),
+                                      );
+                                    },
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SliverFillRemaining(
+                          hasScrollBody: false,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s),
+                            child: BlocBuilder<CreateGroupCubit, CreateGroupState>(
+                              bloc: bloc,
+                              buildWhen:
+                                  (previous, current) =>
+                                      previous.isLoading != current.isLoading || //
+                                      previous.canSubmit != current.canSubmit || //
+                                      previous.isUpdating != current.isUpdating,
+                              builder: (context, state) {
+                                return Row(
+                                  spacing: AppSpacing.s,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Expanded(
+                                      child: FilledButton(
+                                        onPressed: state.canSubmit ? bloc.saveGroup : null,
+                                        child: Text(state.isUpdating ? 'Update' : 'Create'),
+                                      ),
+                                    ),
+                                    if (state.isUpdating)
+                                      Expanded(
+                                        child: FilledButton.tonal(
+                                          onPressed: () {
+                                            HapticFeedback.heavyImpact();
+                                            bloc.toggleDeleteDialog();
+                                          },
+                                          child: const Text('Delete'),
+                                        ),
+                                      ),
+                                  ],
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),

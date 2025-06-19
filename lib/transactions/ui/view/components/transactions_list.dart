@@ -1,6 +1,7 @@
 import 'package:finance_flow/app/app.dart';
 import 'package:finance_flow/transactions/transactions.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 
 class TransactionsList extends StatelessWidget {
   const TransactionsList({required this.onRefresh, required this.transactions, required this.onDelete, super.key});
@@ -36,7 +37,7 @@ class TransactionsList extends StatelessWidget {
                   },
                 );
               },
-              separatorBuilder: (context, index) => const Divider(),
+              separatorBuilder: (context, index) => const Gap(AppSpacing.s),
             ),
           ),
         ),

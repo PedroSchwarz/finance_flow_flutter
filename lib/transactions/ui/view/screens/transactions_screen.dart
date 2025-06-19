@@ -32,165 +32,194 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       listenWhen: (previous, current) => previous.transactionToBeDeleted != current.transactionToBeDeleted,
       listener: _listenTransactionToBeDeleted,
       child: Scaffold(
-        body: NestedScrollView(
-          floatHeaderSlivers: true,
-          headerSliverBuilder: (_, __) {
-            return [
-              SliverAppBar.medium(
-                title: const Text('Transactions'),
-                bottom: PreferredSize(
-                  preferredSize: const Size(0, AppSpacing.s),
-                  child: BlocSelector<TransactionsCubit, TransactionsState, bool>(
+        body: Stack(
+          children: [
+            const AnimatedBackground(),
+            NestedScrollView(
+              floatHeaderSlivers: true,
+              headerSliverBuilder: (_, __) {
+                return [
+                  BlocSelector<TransactionsCubit, TransactionsState, bool>(
                     bloc: bloc,
                     selector: (state) => state.isLoading || state.isRefreshing,
-                    builder: (context, isLoading) => isLoading ? const LinearProgressIndicator() : const SizedBox.shrink(),
+                    builder: (context, isLoading) {
+                      return AppSliverAppBar(title: 'Transactions', isLoading: isLoading);
+                    },
                   ),
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(AppSpacing.s),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      BlocSelector<TransactionsCubit, TransactionsState, TransactionsListType>(
-                        bloc: bloc,
-                        selector: (state) => state.listType,
-                        builder: (context, listType) {
-                          return DropdownButton<TransactionsListType>(
-                            value: listType,
-                            icon: const Padding(padding: EdgeInsets.only(left: AppSpacing.s), child: Icon(Icons.list)),
-                            items:
-                                TransactionsListType.values.map((type) {
-                                  return DropdownMenuItem(
-                                    value: type,
-                                    child: Text(switch (type) {
-                                      TransactionsListType.list => 'List',
-                                      TransactionsListType.calendar => 'Calendar',
-                                    }, style: const TextStyle().copyWith(color: type == listType ? theme.colorScheme.primary : null)),
-                                  );
-                                }).toList(),
-                            onChanged: (value) => bloc.updateListType(value!),
-                            borderRadius: BorderRadius.circular(AppSpacing.s),
-                            dropdownColor: theme.colorScheme.surfaceContainer,
-                          );
-                        },
-                      ),
-                      BlocSelector<TransactionsCubit, TransactionsState, TransactionsTypeFilter>(
-                        bloc: bloc,
-                        selector: (state) => state.typeFilter,
-                        builder: (context, typeFilter) {
-                          return DropdownButton<TransactionsTypeFilter>(
-                            value: typeFilter,
-                            icon: const Padding(padding: EdgeInsets.only(left: AppSpacing.s), child: Icon(Icons.repeat)),
-                            items:
-                                TransactionsTypeFilter.values.map((filter) {
-                                  return DropdownMenuItem(
-                                    value: filter,
-                                    child: Text(switch (filter) {
-                                      TransactionsTypeFilter.all => 'All',
-                                      TransactionsTypeFilter.incomes => 'Incomes',
-                                      TransactionsTypeFilter.expenses => 'Expenses',
-                                    }, style: const TextStyle().copyWith(color: filter == typeFilter ? theme.colorScheme.primary : null)),
-                                  );
-                                }).toList(),
-                            onChanged: (value) => bloc.updateTransactionsTypeFilter(value!),
-                            borderRadius: BorderRadius.circular(AppSpacing.s),
-                            dropdownColor: theme.colorScheme.surfaceContainer,
-                          );
-                        },
-                      ),
-                      BlocSelector<TransactionsCubit, TransactionsState, TransactionsDateSort>(
-                        bloc: bloc,
-                        selector: (state) => state.dateSort,
-                        builder: (context, dateSort) {
-                          return DropdownButton<TransactionsDateSort>(
-                            value: dateSort,
-                            icon: const Padding(padding: EdgeInsets.only(left: AppSpacing.s), child: Icon(Icons.sort)),
-                            items:
-                                TransactionsDateSort.values.map((sort) {
-                                  return DropdownMenuItem(
-                                    value: sort,
-                                    child: Text(switch (sort) {
-                                      TransactionsDateSort.newest => 'Newest',
-                                      TransactionsDateSort.oldest => 'Oldest',
-                                    }, style: const TextStyle().copyWith(color: sort == dateSort ? theme.colorScheme.primary : null)),
-                                  );
-                                }).toList(),
-                            onChanged: (value) => bloc.updateDateSort(value!),
-                            borderRadius: BorderRadius.circular(AppSpacing.s),
-                            dropdownColor: theme.colorScheme.surfaceContainer,
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: BlocSelector<TransactionsCubit, TransactionsState, TransactionsListType>(
-                  bloc: bloc,
-                  selector: (state) => state.listType,
-                  builder: (context, listType) {
-                    if (listType == TransactionsListType.list) {
-                      return const SizedBox.shrink();
-                    }
-
-                    return SizedBox(
-                      height: CalendarPagerViewConstants.collapsedHeight,
-                      child: CalendarPagerView(
-                        theme: CalendarPagerTheme.from(
-                          background: theme.scaffoldBackgroundColor,
-                          accent: theme.colorScheme.primary,
-                          headerTitle: theme.textTheme.headlineLarge!,
-                          itemBorder: theme.colorScheme.primary,
-                          onAccent: theme.colorScheme.onPrimary,
-                          hasShadow: false,
+                  SliverToBoxAdapter(
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(AppSpacing.s, AppSpacing.s, AppSpacing.s, AppSpacing.xm),
+                        child: Row(
+                          spacing: AppSpacing.s,
+                          children: [
+                            BlocSelector<TransactionsCubit, TransactionsState, TransactionsListType>(
+                              bloc: bloc,
+                              selector: (state) => state.listType,
+                              builder: (context, listType) {
+                                return LiquidGlassCard(
+                                  padding: const EdgeInsets.all(AppSpacing.s),
+                                  borderRadius: BorderRadius.circular(AppSpacing.xs),
+                                  isTransparent: true,
+                                  child: DropdownButton<TransactionsListType>(
+                                    value: listType,
+                                    isDense: true,
+                                    icon: const Padding(padding: EdgeInsets.only(left: AppSpacing.s), child: Icon(Icons.list)),
+                                    items:
+                                        TransactionsListType.values.map((type) {
+                                          return DropdownMenuItem(
+                                            value: type,
+                                            child: Text(switch (type) {
+                                              TransactionsListType.list => 'List',
+                                              TransactionsListType.calendar => 'Calendar',
+                                            }, style: const TextStyle().copyWith(color: type == listType ? theme.colorScheme.primary : null)),
+                                          );
+                                        }).toList(),
+                                    onChanged: (value) => bloc.updateListType(value!),
+                                    borderRadius: BorderRadius.circular(AppSpacing.s),
+                                    dropdownColor: theme.colorScheme.surfaceContainer,
+                                    underline: const SizedBox.shrink(),
+                                  ),
+                                );
+                              },
+                            ),
+                            BlocSelector<TransactionsCubit, TransactionsState, TransactionsTypeFilter>(
+                              bloc: bloc,
+                              selector: (state) => state.typeFilter,
+                              builder: (context, typeFilter) {
+                                return LiquidGlassCard(
+                                  padding: const EdgeInsets.all(AppSpacing.s),
+                                  borderRadius: BorderRadius.circular(AppSpacing.xs),
+                                  isTransparent: true,
+                                  child: DropdownButton<TransactionsTypeFilter>(
+                                    value: typeFilter,
+                                    isDense: true,
+                                    icon: const Padding(padding: EdgeInsets.only(left: AppSpacing.s), child: Icon(Icons.repeat)),
+                                    items:
+                                        TransactionsTypeFilter.values.map((filter) {
+                                          return DropdownMenuItem(
+                                            value: filter,
+                                            child: Text(switch (filter) {
+                                              TransactionsTypeFilter.all => 'All',
+                                              TransactionsTypeFilter.incomes => 'Incomes',
+                                              TransactionsTypeFilter.expenses => 'Expenses',
+                                            }, style: const TextStyle().copyWith(color: filter == typeFilter ? theme.colorScheme.primary : null)),
+                                          );
+                                        }).toList(),
+                                    onChanged: (value) => bloc.updateTransactionsTypeFilter(value!),
+                                    borderRadius: BorderRadius.circular(AppSpacing.s),
+                                    dropdownColor: theme.colorScheme.surfaceContainer,
+                                    underline: const SizedBox.shrink(),
+                                  ),
+                                );
+                              },
+                            ),
+                            BlocSelector<TransactionsCubit, TransactionsState, TransactionsDateSort>(
+                              bloc: bloc,
+                              selector: (state) => state.dateSort,
+                              builder: (context, dateSort) {
+                                return LiquidGlassCard(
+                                  padding: const EdgeInsets.all(AppSpacing.s),
+                                  borderRadius: BorderRadius.circular(AppSpacing.xs),
+                                  isTransparent: true,
+                                  child: DropdownButton<TransactionsDateSort>(
+                                    value: dateSort,
+                                    isDense: true,
+                                    icon: const Padding(padding: EdgeInsets.only(left: AppSpacing.s), child: Icon(Icons.sort)),
+                                    items:
+                                        TransactionsDateSort.values.map((sort) {
+                                          return DropdownMenuItem(
+                                            value: sort,
+                                            child: Text(switch (sort) {
+                                              TransactionsDateSort.newest => 'Newest',
+                                              TransactionsDateSort.oldest => 'Oldest',
+                                            }, style: const TextStyle().copyWith(color: sort == dateSort ? theme.colorScheme.primary : null)),
+                                          );
+                                        }).toList(),
+                                    onChanged: (value) => bloc.updateDateSort(value!),
+                                    borderRadius: BorderRadius.circular(AppSpacing.s),
+                                    dropdownColor: theme.colorScheme.surfaceContainer,
+                                    underline: const SizedBox.shrink(),
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
                         ),
-                        hasHeader: false,
-                        onDateSelected: bloc.updateSelectedDate,
                       ),
-                    );
-                  },
-                ),
-              ),
-            ];
-          },
-          body: BlocBuilder<TransactionsCubit, TransactionsState>(
-            bloc: bloc,
-            builder: (context, state) {
-              if (state.isLoading) {
-                return const LoadingTransactionsList();
-              }
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child: BlocSelector<TransactionsCubit, TransactionsState, TransactionsListType>(
+                      bloc: bloc,
+                      selector: (state) => state.listType,
+                      builder: (context, listType) {
+                        if (listType == TransactionsListType.list) {
+                          return const SizedBox.shrink();
+                        }
 
-              final transactions = state.filteredTransactions;
+                        return SizedBox(
+                          height: CalendarPagerViewConstants.collapsedHeight,
+                          child: CalendarPagerView(
+                            theme: CalendarPagerTheme.from(
+                              background: Colors.transparent,
+                              accent: theme.colorScheme.primary,
+                              headerTitle: theme.textTheme.headlineLarge!,
+                              itemBorder: theme.colorScheme.primary,
+                              onAccent: theme.colorScheme.onPrimary,
+                              hasShadow: false,
+                            ),
+                            hasHeader: false,
+                            onDateSelected: bloc.updateSelectedDate,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ];
+              },
+              body: BlocBuilder<TransactionsCubit, TransactionsState>(
+                bloc: bloc,
+                builder: (context, state) {
+                  if (state.isLoading) {
+                    return const LoadingTransactionsList();
+                  }
 
-              if (transactions.isEmpty) {
-                return const Center(child: Text('No transactions found'));
-              }
+                  final transactions = state.filteredTransactions;
 
-              return TransactionsList(
-                onRefresh: bloc.refresh,
-                transactions: transactions,
-                onDelete: (transaction) async {
-                  bloc.selectTransactionToDelete(transaction);
+                  if (transactions.isEmpty) {
+                    return const Center(child: Text('No transactions found'));
+                  }
+
+                  return TransactionsList(
+                    onRefresh: bloc.refresh,
+                    transactions: transactions,
+                    onDelete: (transaction) async {
+                      bloc.selectTransactionToDelete(transaction);
+                    },
+                  );
                 },
-              );
-            },
-          ),
+              ),
+            ),
+          ],
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            if (context.mounted) {
-              final result = await context.pushNamed<bool>(CreateTransactionScreen.routeName);
+        floatingActionButton: LiquidGlassCard(
+          child: FloatingActionButton(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            onPressed: () async {
+              if (context.mounted) {
+                final result = await context.pushNamed<bool>(CreateTransactionScreen.routeName);
 
-              if (result ?? false) {
-                await bloc.refresh();
+                if (result ?? false) {
+                  await bloc.refresh();
+                }
               }
-            }
-          },
-          child: const Icon(Icons.add),
+            },
+            child: const Icon(Icons.add),
+          ),
         ),
       ),
     );

@@ -12,31 +12,37 @@ class DashboardBalanceSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      spacing: AppSpacing.s,
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Your Balance is', style: theme.textTheme.headlineSmall),
-              Text(
-                NumberFormat.simpleCurrency().format(balance),
-                style: theme.textTheme.displayLarge?.copyWith(color: balance.isNegative ? theme.colorScheme.error : theme.colorScheme.primary),
-              ),
-            ],
+    return LiquidGlassCard(
+      padding: const EdgeInsets.all(AppSpacing.s),
+      borderRadius: BorderRadius.circular(AppSpacing.xs),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        spacing: AppSpacing.s,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Your Balance is', style: theme.textTheme.headlineSmall),
+                Text(
+                  NumberFormat.simpleCurrency().format(balance),
+                  style: theme.textTheme.displayLarge?.copyWith(
+                    color: balance == 0 ? theme.colorScheme.onSurface : (balance.isNegative ? theme.colorScheme.error : Colors.green),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-        IconButton.filledTonal(
-          tooltip: 'Add Transactions',
-          onPressed: onTap,
-          padding: const EdgeInsets.all(AppSpacing.s),
-          icon: const Icon(Icons.repeat),
-          color: Colors.green,
-        ),
-      ],
+          IconButton.filledTonal(
+            tooltip: 'Add Transactions',
+            onPressed: onTap,
+            padding: const EdgeInsets.all(AppSpacing.s),
+            icon: const Icon(Icons.repeat),
+            color: Colors.green,
+          ),
+        ],
+      ),
     );
   }
 }

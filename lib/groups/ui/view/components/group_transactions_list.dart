@@ -1,6 +1,7 @@
 import 'package:finance_flow/app/app.dart';
 import 'package:finance_flow/groups/groups.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 
 class GroupTransactionsList extends StatelessWidget {
   const GroupTransactionsList({
@@ -29,23 +30,29 @@ class GroupTransactionsList extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text('Movements', style: theme.textTheme.titleLarge),
-              DropdownButton<GroupTransactionDateSort>(
-                icon: const Padding(padding: EdgeInsets.only(left: AppSpacing.s), child: Icon(Icons.sort)),
-                value: dateSort,
-                isDense: true,
-                items:
-                    GroupTransactionDateSort.values.map((sort) {
-                      return DropdownMenuItem(
-                        value: sort,
-                        child: Text(switch (sort) {
-                          GroupTransactionDateSort.newest => 'Newest',
-                          GroupTransactionDateSort.oldest => 'Oldest',
-                        }, style: TextStyle().copyWith(color: sort == dateSort ? theme.colorScheme.primary : null)),
-                      );
-                    }).toList(),
-                onChanged: onDateSortChanged,
-                borderRadius: BorderRadius.circular(AppSpacing.s),
-                dropdownColor: theme.colorScheme.surfaceContainer,
+              LiquidGlassCard(
+                padding: const EdgeInsets.all(AppSpacing.xs),
+                borderRadius: BorderRadius.circular(AppSpacing.xxs),
+                isTransparent: true,
+                child: DropdownButton<GroupTransactionDateSort>(
+                  icon: const Padding(padding: EdgeInsets.only(left: AppSpacing.s), child: Icon(Icons.sort)),
+                  value: dateSort,
+                  isDense: true,
+                  items:
+                      GroupTransactionDateSort.values.map((sort) {
+                        return DropdownMenuItem(
+                          value: sort,
+                          child: Text(switch (sort) {
+                            GroupTransactionDateSort.newest => 'Newest',
+                            GroupTransactionDateSort.oldest => 'Oldest',
+                          }, style: const TextStyle().copyWith(color: sort == dateSort ? theme.colorScheme.primary : null)),
+                        );
+                      }).toList(),
+                  onChanged: onDateSortChanged,
+                  borderRadius: BorderRadius.circular(AppSpacing.s),
+                  dropdownColor: theme.colorScheme.surfaceContainer,
+                  underline: const SizedBox.shrink(),
+                ),
               ),
             ],
           ),
@@ -60,7 +67,7 @@ class GroupTransactionsList extends StatelessWidget {
                 final transaction = transactions[position];
                 return GroupTransactionItem(transaction: transaction);
               },
-              separatorBuilder: (_, __) => const Divider(),
+              separatorBuilder: (_, __) => const Gap(AppSpacing.s),
             ),
           ),
         ),

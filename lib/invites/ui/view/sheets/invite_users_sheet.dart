@@ -48,27 +48,31 @@ class _InviteUsersSheetState extends State<InviteUsersSheet> {
                     child: Container(
                       padding: const EdgeInsets.all(AppSpacing.s),
                       color: theme.scaffoldBackgroundColor,
-                      child: AppTextField(
-                        label: 'Search Users',
-                        onChanged: (value) {
-                          if (value.isEmpty) {
-                            setState(() {
-                              _users = widget.users;
-                            });
-                          } else {
-                            setState(() {
-                              _users =
-                                  widget.users
-                                      .where(
-                                        (element) =>
-                                            element.firstName.toLowerCase().contains(value.toLowerCase()) ||
-                                            element.lastName.toLowerCase().contains(value.toLowerCase()) ||
-                                            element.email.toLowerCase().contains(value.toLowerCase()),
-                                      )
-                                      .toList();
-                            });
-                          }
-                        },
+                      child: LiquidGlassCard(
+                        borderRadius: BorderRadius.circular(AppSpacing.xs),
+                        isTransparent: true,
+                        child: AppTextField(
+                          label: 'Search Users',
+                          onChanged: (value) {
+                            if (value.isEmpty) {
+                              setState(() {
+                                _users = widget.users;
+                              });
+                            } else {
+                              setState(() {
+                                _users =
+                                    widget.users
+                                        .where(
+                                          (element) =>
+                                              element.firstName.toLowerCase().contains(value.toLowerCase()) ||
+                                              element.lastName.toLowerCase().contains(value.toLowerCase()) ||
+                                              element.email.toLowerCase().contains(value.toLowerCase()),
+                                        )
+                                        .toList();
+                              });
+                            }
+                          },
+                        ),
                       ),
                     ),
                   ),

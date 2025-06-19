@@ -19,49 +19,54 @@ class GroupItem extends StatelessWidget {
     return Stack(
       alignment: Alignment.topRight,
       children: [
-        Card(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.xs)),
-          margin: EdgeInsets.zero,
-          child: InkWell(
+        LiquidGlassCard(
+          borderRadius: BorderRadius.circular(AppSpacing.xs),
+          child: Material(
+            color: Colors.transparent,
             borderRadius: BorderRadius.circular(AppSpacing.xs),
-            onTap: onTap,
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.s),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Text(group.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: theme.textTheme.titleLarge),
-                      const Gap(AppSpacing.xs),
-                      Text(
-                        group.description.isEmpty ? 'No description.' : group.description,
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.bodyLarge,
-                      ),
-                      const Gap(AppSpacing.s),
-                      Text(
-                        CurrencyInputFormatter.getFormatted(group.balance),
-                        style: theme.textTheme.headlineLarge?.copyWith(color: group.balance.isNegative ? Colors.red : theme.colorScheme.primary),
-                      ),
-                    ],
-                  ),
-                  const Gap(AppSpacing.s),
-                  SizedBox(
-                    height: 40,
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: group.members.length,
-                      itemBuilder: (context, index) {
-                        final member = group.members[index];
-                        return CircleAvatar(child: Text(member.initials));
-                      },
-                      separatorBuilder: (context, index) => const Gap(AppSpacing.xs),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(AppSpacing.xs),
+              onTap: onTap,
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.s),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(group.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: theme.textTheme.titleLarge),
+                        const Gap(AppSpacing.xs),
+                        Text(
+                          group.description.isEmpty ? 'No description.' : group.description,
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.bodyLarge,
+                        ),
+                        const Gap(AppSpacing.s),
+                        Text(
+                          CurrencyInputFormatter.getFormatted(group.balance),
+                          style: theme.textTheme.headlineLarge?.copyWith(
+                            color: group.balance == 0 ? theme.colorScheme.onSurface : (group.balance.isNegative ? Colors.red : Colors.green),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
+                    const Gap(AppSpacing.s),
+                    SizedBox(
+                      height: 40,
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: group.members.length,
+                        itemBuilder: (context, index) {
+                          final member = group.members[index];
+                          return CircleAvatar(child: Text(member.initials));
+                        },
+                        separatorBuilder: (context, index) => const Gap(AppSpacing.xs),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

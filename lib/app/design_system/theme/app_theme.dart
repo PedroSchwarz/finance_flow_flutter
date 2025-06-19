@@ -46,8 +46,9 @@ class AppTheme {
     ),
     textTheme: AppTypography.defaultTextTheme,
     inputDecorationTheme: InputDecorationTheme(
-      filled: true,
-      fillColor: darkInputBackgroundColor,
+      // filled: true,
+      // fillColor: darkInputBackgroundColor,
+      floatingLabelBehavior: FloatingLabelBehavior.never,
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
       focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: primaryPurpleLight, width: 2)),
       enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
