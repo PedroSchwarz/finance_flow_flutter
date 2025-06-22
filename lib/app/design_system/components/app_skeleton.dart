@@ -30,7 +30,7 @@ class _AppSkeletonState extends State<AppSkeleton> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) {
-    final Brightness brightness = MediaQuery.platformBrightnessOf(context);
+    final Brightness brightness = Brightness.dark;
 
     if (!widget.isLoading) return widget.child;
 
