@@ -286,6 +286,7 @@ class _GroupDetailsScreenState extends State<GroupDetailsScreen> {
                     context: context,
                     useSafeArea: true,
                     isScrollControlled: true,
+                    showDragHandle: true,
                     builder: (context) {
                       return BlocBuilder<GroupDetailsCubit, GroupDetailsState>(
                         bloc: bloc,
