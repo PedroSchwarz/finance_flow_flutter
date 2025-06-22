@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
-class MakeGroupTransactionSheet extends StatefulWidget {
+class MakeGroupTransactionSheet extends StatelessWidget {
   const MakeGroupTransactionSheet({
     required this.transactionType,
     required this.onTransactionTypeChanged,
@@ -27,19 +27,6 @@ class MakeGroupTransactionSheet extends StatefulWidget {
   final VoidCallback onSubmit;
 
   @override
-  State<MakeGroupTransactionSheet> createState() => _MakeGroupTransactionSheetState();
-}
-
-class _MakeGroupTransactionSheetState extends State<MakeGroupTransactionSheet> with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 300));
-  }
-
-  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
@@ -50,72 +37,64 @@ class _MakeGroupTransactionSheetState extends State<MakeGroupTransactionSheet> w
           scope.unfocus();
         }
       },
-      child: BottomSheet(
-        onClosing: () {},
-        showDragHandle: true,
-        animationController: _controller,
-        builder: (context) {
-          return SafeArea(
-            top: false,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Text('Make a movement', style: theme.textTheme.titleLarge),
-                          const Gap(AppSpacing.m),
-                          SegmentedButton(
-                            segments:
-                                TransactionType.values.map((type) {
-                                  return ButtonSegment(
-                                    value: type,
-                                    label: Text(switch (type) {
-                                      TransactionType.expense => 'Withdraw',
-                                      TransactionType.income => 'Deposit',
-                                    }),
-                                  );
-                                }).toList(),
-                            onSelectionChanged: (selection) {
-                              widget.onTransactionTypeChanged(selection.first);
-                            },
-                            selected: {widget.transactionType},
-                          ),
-                          const Gap(AppSpacing.m),
-                          AppTextField(
-                            label: 'Amount',
-                            currencyValue: widget.depositAmount,
-                            onChanged: (value) {
-                              widget.onDepositAmountChanged(CurrencyInputFormatter.parseFormatted(value));
-                            },
-                            labelStyle: theme.textTheme.titleLarge?.copyWith(color: theme.colorScheme.secondary),
-                            textStyle: theme.textTheme.displayMedium,
-                            helper: switch (widget.transactionType) {
-                              TransactionType.expense => 'Available withdrawal amount: ${CurrencyInputFormatter.getFormatted(widget.memberDeposit)}',
-                              TransactionType.income => 'Available deposit amount: ${CurrencyInputFormatter.getFormatted(widget.userBalance)}',
-                            },
-                            fillColor: Colors.transparent,
-                            error: widget.canSubmit ? null : 'Amount exceeds available balance',
-                            border: UnderlineInputBorder(borderSide: BorderSide(color: theme.colorScheme.primary)),
-                            inputFormatters: [CurrencyInputFormatter()],
-                            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                          ),
-                        ],
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text('Make a movement', style: theme.textTheme.titleLarge),
+                      const Gap(AppSpacing.m),
+                      SegmentedButton(
+                        segments:
+                            TransactionType.values.map((type) {
+                              return ButtonSegment(
+                                value: type,
+                                label: Text(switch (type) {
+                                  TransactionType.expense => 'Withdraw',
+                                  TransactionType.income => 'Deposit',
+                                }),
+                              );
+                            }).toList(),
+                        onSelectionChanged: (selection) {
+                          onTransactionTypeChanged(selection.first);
+                        },
+                        selected: {transactionType},
                       ),
-                    ),
+                      const Gap(AppSpacing.m),
+                      AppTextField(
+                        label: 'Amount',
+                        currencyValue: depositAmount,
+                        onChanged: (value) {
+                          onDepositAmountChanged(CurrencyInputFormatter.parseFormatted(value));
+                        },
+                        labelStyle: theme.textTheme.titleLarge?.copyWith(color: theme.colorScheme.secondary),
+                        textStyle: theme.textTheme.displayMedium,
+                        helper: switch (transactionType) {
+                          TransactionType.expense => 'Available withdrawal amount: ${CurrencyInputFormatter.getFormatted(memberDeposit)}',
+                          TransactionType.income => 'Available deposit amount: ${CurrencyInputFormatter.getFormatted(userBalance)}',
+                        },
+                        fillColor: Colors.transparent,
+                        error: canSubmit ? null : 'Amount exceeds available balance',
+                        border: UnderlineInputBorder(borderSide: BorderSide(color: theme.colorScheme.primary)),
+                        inputFormatters: [CurrencyInputFormatter()],
+                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      ),
+                    ],
                   ),
-                  const Gap(AppSpacing.s),
-                  FilledButton(onPressed: widget.depositAmount > 0 && widget.canSubmit ? widget.onSubmit : null, child: const Text('Submit')),
-                  FilledButton.tonal(onPressed: context.pop, child: const Text('Close')),
-                ],
+                ),
               ),
-            ),
-          );
-        },
+              const Gap(AppSpacing.s),
+              FilledButton(onPressed: depositAmount > 0 && canSubmit ? onSubmit : null, child: const Text('Submit')),
+              FilledButton.tonal(onPressed: context.pop, child: const Text('Close')),
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -255,46 +255,51 @@ class _GroupDetailsScreenState extends State<GroupDetailsScreen> {
             ),
           ),
           floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-          floatingActionButton: FloatingActionButton(
-            onPressed: () async {
-              if (context.mounted) {
-                final _ = await showModalBottomSheet(
-                  context: context,
-                  useSafeArea: true,
-                  isScrollControlled: true,
-                  builder: (context) {
-                    return BlocBuilder<GroupDetailsCubit, GroupDetailsState>(
-                      bloc: bloc,
-                      buildWhen:
-                          (previous, current) =>
-                              previous.transactionType != current.transactionType ||
-                              previous.depositAmount != current.depositAmount ||
-                              previous.userBalance != current.userBalance ||
-                              previous.memberDeposit != current.memberDeposit,
-                      builder: (context, state) {
-                        return MakeGroupTransactionSheet(
-                          transactionType: state.transactionType,
-                          onTransactionTypeChanged: bloc.updateTransactionType,
-                          depositAmount: state.depositAmount,
-                          onDepositAmountChanged: bloc.updateDepositAmount,
-                          memberDeposit: state.memberDeposit,
-                          userBalance: state.userBalance,
-                          canSubmit: state.canSubmit,
-                          onSubmit: () async {
-                            if (context.mounted) {
-                              context.pop();
-                            }
-                            await bloc.makeTransaction();
-                          },
-                        );
-                      },
-                    );
-                  },
-                );
-                bloc.resetTransactionForm();
-              }
-            },
-            child: const Icon(Icons.repeat),
+          floatingActionButton: LiquidGlassCard(
+            child: FloatingActionButton(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              onPressed: () async {
+                if (context.mounted) {
+                  final _ = await showModalBottomSheet(
+                    context: context,
+                    useSafeArea: true,
+                    isScrollControlled: true,
+                    showDragHandle: true,
+                    builder: (context) {
+                      return BlocBuilder<GroupDetailsCubit, GroupDetailsState>(
+                        bloc: bloc,
+                        buildWhen:
+                            (previous, current) =>
+                                previous.transactionType != current.transactionType ||
+                                previous.depositAmount != current.depositAmount ||
+                                previous.userBalance != current.userBalance ||
+                                previous.memberDeposit != current.memberDeposit,
+                        builder: (context, state) {
+                          return MakeGroupTransactionSheet(
+                            transactionType: state.transactionType,
+                            onTransactionTypeChanged: bloc.updateTransactionType,
+                            depositAmount: state.depositAmount,
+                            onDepositAmountChanged: bloc.updateDepositAmount,
+                            memberDeposit: state.memberDeposit,
+                            userBalance: state.userBalance,
+                            canSubmit: state.canSubmit,
+                            onSubmit: () async {
+                              if (context.mounted) {
+                                context.pop();
+                              }
+                              await bloc.makeTransaction();
+                            },
+                          );
+                        },
+                      );
+                    },
+                  );
+                  bloc.resetTransactionForm();
+                }
+              },
+              child: const Icon(Icons.repeat),
+            ),
           ),
         ),
       ),
