@@ -20,9 +20,9 @@ class DashboardDrawer extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(AppSpacing.s, AppSpacing.s, AppSpacing.s, 0),
           child: Column(
             spacing: AppSpacing.s,
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const AppLogo(size: 50),
+              const Center(child: AppLogo(size: 50)),
               Row(
                 spacing: AppSpacing.s,
                 children: [
