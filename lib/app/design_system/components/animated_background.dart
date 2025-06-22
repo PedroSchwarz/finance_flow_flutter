@@ -1,9 +1,11 @@
-import 'dart:math' as math;
-
+import 'package:finance_flow/app/design_system/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 
 class AnimatedBackground extends StatefulWidget {
-  const AnimatedBackground({super.key});
+  const AnimatedBackground({this.hasShapes = false, this.isBorder = true, super.key});
+
+  final bool hasShapes;
+  final bool isBorder;
 
   @override
   State<AnimatedBackground> createState() => _AnimatedBackgroundState();
@@ -29,50 +31,94 @@ class _AnimatedBackgroundState extends State<AnimatedBackground> with SingleTick
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _backgroundAnimation,
-      builder: (context, child) {
-        return Container(
-          width: double.infinity,
-          height: double.infinity,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: const [Color(0xFF667eea), Color(0xFF764ba2), Color(0xFFf093fb), Color(0xFFf5576c)],
-              stops: [0.0 + _backgroundAnimation.value * 0.3, 0.3 + _backgroundAnimation.value * 0.3, 0.7 + _backgroundAnimation.value * 0.3, 1.0],
-            ),
+    final theme = Theme.of(context);
+
+    return Stack(
+      children: [
+        AnimatedBuilder(
+          animation: _backgroundAnimation,
+          builder: (context, child) {
+            return Container(
+              width: double.infinity,
+              height: double.infinity,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: const [Color(0xFF667eea), Color(0xFF764ba2), Color(0xFFf093fb), Color(0xFFf5576c)],
+                  stops: [
+                    0.0 + _backgroundAnimation.value * 0.3,
+                    0.3 + _backgroundAnimation.value * 0.3,
+                    0.7 + _backgroundAnimation.value * 0.3,
+                    1.0,
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+        if (widget.isBorder)
+          Container(
+            height: double.infinity,
+            width: double.infinity,
+            margin: const EdgeInsets.all(AppSpacing.xxs),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(AppSpacing.l), color: theme.scaffoldBackgroundColor),
           ),
-          child: Stack(
-            children: [
-              AnimatedBackgroundShape(
-                top: 100 + math.sin(_backgroundAnimation.value * 2 * math.pi) * 50,
-                left: 50 + math.cos(_backgroundAnimation.value * 2 * math.pi) * 30,
-                size: 80,
-                color: Colors.white.withValues(alpha: 0.1),
-              ),
-              AnimatedBackgroundShape(
-                top: 300 + math.cos(_backgroundAnimation.value * 1.5 * math.pi) * 40,
-                right: 80 + math.sin(_backgroundAnimation.value * 1.5 * math.pi) * 25,
-                size: 120,
-                color: Colors.white.withValues(alpha: 0.08),
-              ),
-              AnimatedBackgroundShape(
-                bottom: 200 + math.sin(_backgroundAnimation.value * 2.5 * math.pi) * 60,
-                left: 200 + math.cos(_backgroundAnimation.value * 2.5 * math.pi) * 40,
-                size: 60,
-                color: Colors.white.withValues(alpha: 0.12),
-              ),
-            ],
+        if (widget.hasShapes)
+          AnimatedBuilder(
+            animation: _backgroundAnimation,
+            builder: (context, child) {
+              return Stack(
+                children: [
+                  AnimatedBackgroundShape(
+                    top: -200,
+                    right: -100,
+                    size: 400,
+                    borderRadius: BorderRadius.circular(10000),
+                    color: theme.colorScheme.primaryContainer.withValues(alpha: 0.5),
+                  ),
+                  AnimatedBackgroundShape(
+                    top: 140,
+                    right: -100,
+                    size: 200,
+                    borderRadius: BorderRadius.circular(10000),
+                    color: Colors.red.withValues(alpha: 0.3),
+                    minScale: 0.6,
+                    maxScale: 1.1,
+                    animationDelay: const Duration(milliseconds: 2500),
+                  ),
+                  AnimatedBackgroundShape(
+                    top: 100,
+                    right: -40,
+                    size: 160,
+                    borderRadius: BorderRadius.circular(10000),
+                    color: Colors.pink.withValues(alpha: 0.3),
+                    minScale: 1,
+                    animationDelay: const Duration(milliseconds: 3500),
+                  ),
+                ],
+              );
+            },
           ),
-        );
-      },
+      ],
     );
   }
 }
 
 class AnimatedBackgroundShape extends StatefulWidget {
-  const AnimatedBackgroundShape({required this.size, required this.color, this.top, this.bottom, this.left, this.right, super.key});
+  const AnimatedBackgroundShape({
+    required this.size,
+    required this.color,
+    this.top,
+    this.bottom,
+    this.left,
+    this.right,
+    this.borderRadius,
+    this.minScale,
+    this.maxScale,
+    this.animationDelay,
+    super.key,
+  });
 
   final double? top;
   final double? bottom;
@@ -80,6 +126,10 @@ class AnimatedBackgroundShape extends StatefulWidget {
   final double? right;
   final double size;
   final Color color;
+  final BorderRadius? borderRadius;
+  final double? minScale;
+  final double? maxScale;
+  final Duration? animationDelay;
 
   @override
   State<AnimatedBackgroundShape> createState() => _AnimatedBackgroundShapeState();
@@ -92,9 +142,17 @@ class _AnimatedBackgroundShapeState extends State<AnimatedBackgroundShape> with 
   @override
   void initState() {
     super.initState();
-    _pulseController = AnimationController(duration: const Duration(seconds: 2), vsync: this);
-    _pulseAnimation = Tween<double>(begin: 0.8, end: 1.2).animate(CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut));
-    _pulseController.repeat(reverse: true);
+    _pulseController = AnimationController(duration: const Duration(seconds: 10), vsync: this);
+    _pulseAnimation = Tween<double>(
+      begin: widget.minScale ?? 0.4,
+      end: widget.maxScale ?? 1.2,
+    ).animate(CurvedAnimation(parent: _pulseController, curve: Curves.decelerate));
+
+    if (widget.animationDelay != null) {
+      Future.delayed(widget.animationDelay!).then((value) => _pulseController.repeat(reverse: true));
+    } else {
+      _pulseController.repeat(reverse: true);
+    }
   }
 
   @override
@@ -120,7 +178,7 @@ class _AnimatedBackgroundShapeState extends State<AnimatedBackgroundShape> with 
               height: widget.size,
               decoration: BoxDecoration(
                 color: widget.color,
-                borderRadius: BorderRadius.circular(widget.size / 4),
+                borderRadius: widget.borderRadius ?? BorderRadius.circular(widget.size / 4),
                 boxShadow: [BoxShadow(color: Colors.white.withValues(alpha: 0.1), blurRadius: 20, spreadRadius: 5)],
               ),
             ),
